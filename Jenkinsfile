@@ -110,9 +110,6 @@ pipeline {
                 echo 'Building Iab extras Jackson'
                 gradlew ':iabtcf-extras-jackson:assembleRelease'
 
-                echo 'Building Whole decoder module'
-                gradlew ':tcstring-decoder:assembleRelease'
-
             }
         }
 
