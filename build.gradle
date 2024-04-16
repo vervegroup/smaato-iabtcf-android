@@ -85,7 +85,7 @@ subprojects { project ->
 
 static def getNexusUrl() {
     def branch = getBranchName()
-    if (branch.startsWith('release/')) {
+    if (branch.startsWith('decoder_release/')) {
         return "https://nexus.smaato.net/repository/releases"
     } else {
         return "https://nexus.smaato.net/repository/snapshots"
