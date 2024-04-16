@@ -1,0 +1,32 @@
+apply plugin: "java-library"
+apply plugin: "java-gradle-plugin"
+apply plugin: "groovy"
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+dependencies {
+    implementation 'com.android.tools.build:gradle:7.1.1'
+    implementation "org.javassist:javassist:3.26.0-GA"
+    implementation "com.android.tools:common:30.1.1"
+    implementation localGroovy()
+}
+
+gradlePlugin {
+    plugins {
+        register("AarArtifactPlugin") {
+            id = "aar-artifact"
+            implementationClass = "com.smaato.sdk.AarArtifactPlugin"
+        }
+        register("proguard-mapping") {
+            id = "proguard-mapping"
+            implementationClass = "com.smaato.sdk.ProguardMappingPlugin"
+        }
+        register("NullcheckPlugin") {
+            id = "nullcheck"
+            implementationClass = "com.smaato.sdk.NullcheckPlugin"
+        }
+    }
+}
