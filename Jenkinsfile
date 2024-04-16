@@ -100,18 +100,16 @@ pipeline {
             steps {
                 echo 'Building Smaato Iab decoder'
                 gradlew ':iabtcf-decoder'
-            }
-            steps {
+
                 echo 'Building Smaato Iab encoder'
                 gradlew ':iabtcf-encoder'
-            }
-            steps {
+
                 echo 'Building Iab extras'
                 gradlew ':iabtcf-extras-jackson'
-            }
-            steps {
+
                 echo 'Building Iab extras Jackson'
                 gradlew ':iabtcf-extras-jackson'
+
             }
         }
 
