@@ -22,15 +22,13 @@ package com.iabtcf.decoder;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-
-import com.iabtcf.decoder.LazySegmentFactory;
 
 public class SegmentFactoryTest {
     @Test
@@ -40,13 +38,13 @@ public class SegmentFactoryTest {
         Supplier<InputStream> f2 = f.next();
         Supplier<InputStream> f3 = f.next();
 
-        String text = IOUtils.toString(f1.get(), StandardCharsets.US_ASCII);
+        String text = IOUtils.toString(f1.get(), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("hello", text);
 
-        text = IOUtils.toString(f2.get(), StandardCharsets.US_ASCII);
+        text = IOUtils.toString(f2.get(), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("world", text);
 
-        text = IOUtils.toString(f3.get(), StandardCharsets.US_ASCII);
+        text = IOUtils.toString(f3.get(), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("", text);
     }
 
@@ -57,19 +55,19 @@ public class SegmentFactoryTest {
         Supplier<InputStream> f2 = f.next();
         Supplier<InputStream> f3 = f.next();
 
-        String text = IOUtils.toString(f3.get(), StandardCharsets.US_ASCII);
+        String text = IOUtils.toString(f3.get(), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("", text);
 
-        text = IOUtils.toString(f3.get(), StandardCharsets.US_ASCII);
+        text = IOUtils.toString(f3.get(), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("", text);
 
-        text = IOUtils.toString(f2.get(), StandardCharsets.US_ASCII);
+        text = IOUtils.toString(f2.get(), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("world", text);
 
-        text = IOUtils.toString(f1.get(), StandardCharsets.US_ASCII);
+        text = IOUtils.toString(f1.get(), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("hello", text);
 
-        text = IOUtils.toString(f1.get(), StandardCharsets.US_ASCII);
+        text = IOUtils.toString(f1.get(), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("", text);
     }
 
@@ -77,7 +75,7 @@ public class SegmentFactoryTest {
     public void testReset() throws IOException {
         LazySegmentFactory f = new LazySegmentFactory("hello.world");
         Supplier<InputStream> f1 = f.next();
-        String text = IOUtils.toString(f1.get(), StandardCharsets.US_ASCII);
+        String text = IOUtils.toString(f1.get(), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("hello", text);
 
         InputStream is = f1.get();
@@ -85,7 +83,7 @@ public class SegmentFactoryTest {
         is.reset();
 
         assertEquals(1, is.available());
-        text = IOUtils.toString(f1.get(), StandardCharsets.US_ASCII);
+        text = IOUtils.toString(f1.get(), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("hello", text);
     }
 }

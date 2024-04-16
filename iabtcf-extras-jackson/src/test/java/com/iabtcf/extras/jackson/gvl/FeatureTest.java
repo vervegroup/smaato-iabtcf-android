@@ -21,8 +21,9 @@ package com.iabtcf.extras.jackson.gvl;
  */
 
 import com.iabtcf.extras.gvl.Feature;
-import com.iabtcf.extras.jackson.TestUtil;
 import com.iabtcf.extras.jackson.Loader;
+import com.iabtcf.extras.jackson.TestUtil;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

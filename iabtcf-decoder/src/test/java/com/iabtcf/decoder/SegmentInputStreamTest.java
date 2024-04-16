@@ -25,15 +25,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-
-import com.iabtcf.decoder.SegmentInputStream;
 
 public class SegmentInputStreamTest {
 
@@ -123,19 +121,19 @@ public class SegmentInputStreamTest {
         Base64.Decoder decoder = Base64.getDecoder();
         SegmentInputStream sis = newSegmentInputStream(src);
 
-        String text = IOUtils.toString(decoder.wrap(sis), StandardCharsets.US_ASCII);
+        String text = IOUtils.toString(decoder.wrap(sis), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("hello", text);
 
         assertTrue(sis.hasNextSegment());
         sis = newSegmentInputStream(src, sis.segmentEnd() + 1);
 
-        text = IOUtils.toString(decoder.wrap(sis), StandardCharsets.US_ASCII);
+        text = IOUtils.toString(decoder.wrap(sis), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("world", text);
 
         assertFalse(sis.hasNextSegment());
 
         sis = newSegmentInputStream(src, sis.segmentEnd() + 1);
-        text = IOUtils.toString(decoder.wrap(sis), StandardCharsets.US_ASCII);
+        text = IOUtils.toString(decoder.wrap(sis), String.valueOf(StandardCharsets.US_ASCII));
         assertEquals("", text);
     }
 
@@ -190,10 +188,10 @@ public class SegmentInputStreamTest {
         
         assertEquals(s, IOUtils.toString(new StringReader(s)));
 
-        String text = IOUtils.toString(new SegmentInputStream(s, 0), StandardCharsets.UTF_8);
+        String text = IOUtils.toString(new SegmentInputStream(s, 0), String.valueOf(StandardCharsets.UTF_8));
         assertNotEquals(s, text);
 
-        text = IOUtils.toString(new SegmentInputStream(s, 0), StandardCharsets.US_ASCII);
+        text = IOUtils.toString(new SegmentInputStream(s, 0), String.valueOf(StandardCharsets.US_ASCII));
         assertNotEquals(s, text);
     }
 }

@@ -20,7 +20,8 @@ package com.iabtcf.extras.jackson.cmp;
  * #L%
  */
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.time.Instant;
 import java.util.Optional;
