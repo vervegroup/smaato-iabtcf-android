@@ -20,6 +20,9 @@ package com.iabtcf.utils;
  * #L%
  */
 
+import android.annotation.TargetApi;
+import android.os.Build;
+
 import java.util.function.Function;
 
 /**
@@ -200,6 +203,7 @@ public enum FieldDefs {
     /**
      * Returns the length of a non-dynamic field.
      */
+    @TargetApi(Build.VERSION_CODES.N)
     public int getLength() {
         assert (length.isDynamic() == false);
 
@@ -235,6 +239,7 @@ public enum FieldDefs {
      *
      * Dynamic fields are not cached at the enum level and are instead resolved through the BitReader.
      */
+    @TargetApi(Build.VERSION_CODES.N)
     private static abstract class MemoizingFunction
             implements LengthSupplier, OffsetSupplier, Function<BitReader, Integer> {
         private volatile boolean dynamicInitialized = false;
@@ -269,6 +274,7 @@ public enum FieldDefs {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     private interface OffsetSupplier extends Function<BitReader, Integer> {
 
         /**
@@ -346,6 +352,7 @@ public enum FieldDefs {
         boolean isDynamic();
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     private interface LengthSupplier extends Function<BitReader, Integer> {
 
         /**
