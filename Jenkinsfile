@@ -100,15 +100,23 @@ pipeline {
             steps {
                 echo 'Building Smaato Iab decoder'
                 gradlew ':iabtcf-decoder'
+                archive('iabtcf-decoder')
 
                 echo 'Building Smaato Iab encoder'
                 gradlew ':iabtcf-encoder'
+                archive('iabtcf-encoder')
 
                 echo 'Building Iab extras'
-                gradlew ':iabtcf-extras-jackson'
+                gradlew ':iabtcf-extras'
+                archive('iabtcf-extras')
 
                 echo 'Building Iab extras Jackson'
                 gradlew ':iabtcf-extras-jackson'
+                archive('iabtcf-extras-jackson')
+
+                echo 'Building Whole decoder module'
+                gradlew ':tcstring-decoder:assembleRelease'
+                archiveArtifacts artifacts: "smaato-sdk/build/outputs/aar/*.aar", fingerprint: true
 
             }
         }
