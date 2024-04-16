@@ -22,6 +22,8 @@ android {
 dependencies {
     implementation project(path: ':iabtcf-extras')
     implementation 'org.codehaus.jackson:jackson-core-asl:1.1.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.0.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0'
 }
 
 publishing.publications {

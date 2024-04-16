@@ -20,6 +20,9 @@ package com.iabtcf.extras.jackson.gvl;
  * #L%
  */
 
+import android.annotation.TargetApi;
+import android.os.Build;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -142,6 +145,7 @@ public class Vendor implements com.iabtcf.extras.gvl.Vendor {
      * @deprecated since 3.0
      * @return policy url string
      */
+    @TargetApi(Build.VERSION_CODES.N)
     @Override
     public Optional<String> getPolicyUrl() {
         return Optional.ofNullable(policyUrl);
@@ -152,6 +156,7 @@ public class Vendor implements com.iabtcf.extras.gvl.Vendor {
      *
      * @return date string
      */
+    @TargetApi(Build.VERSION_CODES.N)
     @Override
     public Optional<Instant> getDeletedDate() {
         return Optional.ofNullable(deletedDate);
@@ -164,6 +169,7 @@ public class Vendor implements com.iabtcf.extras.gvl.Vendor {
      *
      * @return A {@link com.iabtcf.extras.gvl.Overflow} object
      */
+    @TargetApi(Build.VERSION_CODES.N)
     @Override
     public Optional<Overflow> getOverflow() {
         return Optional.ofNullable(overflow);
@@ -174,6 +180,7 @@ public class Vendor implements com.iabtcf.extras.gvl.Vendor {
      *
      * @return true, if the vendor is deleted
      */
+    @TargetApi(Build.VERSION_CODES.O)
     @Override
     public boolean isDeleted() {
         return Optional.ofNullable(this.deletedDate)
@@ -187,6 +194,7 @@ public class Vendor implements com.iabtcf.extras.gvl.Vendor {
      * @return The number, in seconds, of the longest potential duration for storage on a device, as set when using the
      * cookie method of storage.
      */
+    @TargetApi(Build.VERSION_CODES.N)
     @Override
     public Optional<Long> getCookieMaxAgeSeconds() {
         return Optional.ofNullable(cookieMaxAgeSeconds);
@@ -197,6 +205,7 @@ public class Vendor implements com.iabtcf.extras.gvl.Vendor {
      *
      * @return True indicates cookie storage is used
      */
+    @TargetApi(Build.VERSION_CODES.N)
     @Override
     public Optional<Boolean> getUsesCookies() {
         return Optional.ofNullable(usesCookies);
@@ -208,6 +217,7 @@ public class Vendor implements com.iabtcf.extras.gvl.Vendor {
      *
      * @return True indicates the vendor refreshes this cookie
      */
+    @TargetApi(Build.VERSION_CODES.N)
     @Override
     public Optional<Boolean> getCookieRefresh() {
         return Optional.ofNullable(cookieRefresh);
@@ -220,6 +230,7 @@ public class Vendor implements com.iabtcf.extras.gvl.Vendor {
      *
      * @return True indicates non-cookie access is used
      */
+    @TargetApi(Build.VERSION_CODES.N)
     @Override
     public Optional<Boolean> getUsesNonCookieAccess() {
         return Optional.of(usesNonCookieAccess);
@@ -230,6 +241,7 @@ public class Vendor implements com.iabtcf.extras.gvl.Vendor {
      *
      * @return Location of vendor-hosted deviceStorage.json file
      */
+    @TargetApi(Build.VERSION_CODES.N)
     @Override
     public Optional<String> getDeviceStorageDisclosureUrl() {
         return Optional.ofNullable(deviceStorageDisclosureUrl);
@@ -240,6 +252,7 @@ public class Vendor implements com.iabtcf.extras.gvl.Vendor {
      * @since 3.0
      * @return dataRetention
      */
+    @TargetApi(Build.VERSION_CODES.N)
     public Optional<DataRetention> getDataRetention() {
         return Optional.ofNullable(dataRetention);
     }
@@ -249,6 +262,7 @@ public class Vendor implements com.iabtcf.extras.gvl.Vendor {
      * @since 3.0
      * @return urls
      */
+    @TargetApi(Build.VERSION_CODES.N)
     public Optional<List<VendorUrl>> getUrls() {
         return Optional.ofNullable(urls);
     }
@@ -258,6 +272,7 @@ public class Vendor implements com.iabtcf.extras.gvl.Vendor {
      * @since 3.0
      * @return dataDeclarations
      */
+    @TargetApi(Build.VERSION_CODES.N)
     public Optional<List<Integer>> getDataDeclaration() {
         return Optional.ofNullable(dataDeclaration);
     }

@@ -1,5 +1,8 @@
 package com.iabtcf.extras.jackson.gvl;
 
+import android.annotation.TargetApi;
+import android.os.Build;
+
 import java.util.Optional;
 
 /*-
@@ -58,6 +61,7 @@ public class VendorUrl implements com.iabtcf.extras.gvl.VendorUrl {
      *
      * @return legIntClaim
      */
+    @TargetApi(Build.VERSION_CODES.N)
     @Override
     public Optional<String> getLegIntClaim() {
         return Optional.ofNullable(legIntClaim);
