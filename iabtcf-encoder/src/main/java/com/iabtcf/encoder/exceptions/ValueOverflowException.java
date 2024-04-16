@@ -20,6 +20,9 @@ package com.iabtcf.encoder.exceptions;
  * #L%
  */
 
+import android.annotation.TargetApi;
+import android.os.Build;
+
 import java.util.Optional;
 
 import com.iabtcf.utils.FieldDefs;
@@ -30,6 +33,7 @@ public class ValueOverflowException extends RuntimeException {
     private final Optional<Long> max;
     private final Optional<Long> value;
 
+    @TargetApi(Build.VERSION_CODES.N)
     public ValueOverflowException() {
         super();
 
@@ -43,18 +47,21 @@ public class ValueOverflowException extends RuntimeException {
         return "ValueOverflowException [field=" + field + ", max=" + max + ", value=" + value + "]";
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     public ValueOverflowException(long value, FieldDefs field) {
         this.max = Optional.empty();
         this.value = Optional.of(value);
         this.field = Optional.empty();
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     public ValueOverflowException(long value, long max, FieldDefs field) {
         this.max = Optional.of(max);
         this.value = Optional.of(value);
         this.field = Optional.of(field);
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     public ValueOverflowException(long value, long max) {
         this.max = Optional.empty();
         this.value = Optional.of(value);

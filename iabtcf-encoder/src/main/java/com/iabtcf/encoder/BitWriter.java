@@ -224,6 +224,7 @@ class BitWriter {
     /**
      * Returns the byte array.
      */
+    @TargetApi(Build.VERSION_CODES.N)
     public byte[] toByteArray() {
         enforcePrecision();
 
