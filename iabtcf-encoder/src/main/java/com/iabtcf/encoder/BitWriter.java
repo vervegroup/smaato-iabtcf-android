@@ -20,6 +20,14 @@ package com.iabtcf.encoder;
  * #L%
  */
 
+import android.annotation.TargetApi;
+import android.os.Build;
+
+import com.iabtcf.encoder.exceptions.ValueOverflowException;
+import com.iabtcf.utils.FieldDefs;
+import com.iabtcf.utils.IntIterable;
+import com.iabtcf.utils.IntIterator;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -27,11 +35,6 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.BitSet;
 import java.util.PrimitiveIterator.OfLong;
-
-import com.iabtcf.encoder.exceptions.ValueOverflowException;
-import com.iabtcf.utils.FieldDefs;
-import com.iabtcf.utils.IntIterable;
-import com.iabtcf.utils.IntIterator;
 
 /**
  * Provides the ability to construct a byte array that is iabtcf compliant. The BitWriter provides
@@ -81,6 +84,7 @@ class BitWriter {
     /**
      * Writes an iabtcf encoded String..
      */
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public void write(String str) {
         assert Charset.forName("US-ASCII").newEncoder().canEncode(str);
         byte[] b = str.toUpperCase().getBytes(StandardCharsets.US_ASCII);
@@ -110,6 +114,7 @@ class BitWriter {
     /**
      * Writes an iabtcf encoded instant value.
      */
+    @TargetApi(Build.VERSION_CODES.O)
     public void write(Instant i, FieldDefs field) {
         write(i.toEpochMilli() / 100, field);
     }
@@ -120,6 +125,7 @@ class BitWriter {
      *
      * @throws IndexOutOfBoundsException if 'of' contains an invalid index, <= 0 or length is < 0
      */
+    @TargetApi(Build.VERSION_CODES.N)
     public void write(IntIterable of, int length) {
         if (length < 0) {
             throw new IllegalArgumentException("length must be non-negative");
@@ -198,6 +204,7 @@ class BitWriter {
     /**
      * Writes bits encoded by the specified BitWriter. Padding bits, if any, are also appended.
      */
+    @TargetApi(Build.VERSION_CODES.N)
     public void write(BitWriter bw) {
         for (OfLong i = bw.buffer.longIterator(); i.hasNext();) {
             write(i.nextLong(), Long.SIZE);
@@ -255,6 +262,7 @@ class BitWriter {
     /**
      * Returns a base64 url encoded representation of the bit array.
      */
+    @TargetApi(Build.VERSION_CODES.O)
     public String toBase64() {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(this.toByteArray());
     }

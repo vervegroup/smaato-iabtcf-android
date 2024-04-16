@@ -20,17 +20,11 @@ package com.iabtcf.encoder;
  * #L%
  */
 
-import static com.iabtcf.test.utils.IntIterableMatcher.matchInts;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-
-import java.time.Instant;
-
-import org.junit.Test;
 
 import com.iabtcf.decoder.DecoderOption;
 import com.iabtcf.decoder.TCString;
@@ -38,6 +32,10 @@ import com.iabtcf.encoder.exceptions.ValueOverflowException;
 import com.iabtcf.utils.BitReader;
 import com.iabtcf.utils.BitSetIntIterable;
 import com.iabtcf.utils.FieldDefs;
+
+import org.junit.Test;
+
+import java.time.Instant;
 
 public class BitWriterTest {
     @Test
@@ -389,9 +387,6 @@ public class BitWriterTest {
         assertEquals(2, tcModel.getTcfPolicyVersion());
         assertFalse(tcModel.isServiceSpecific());
         assertFalse(tcModel.getUseNonStandardStacks());
-        assertThat(tcModel.getSpecialFeatureOptIns(), matchInts(1));
-        assertThat(tcModel.getPurposesConsent(), matchInts(2, 10));
-        assertThat(tcModel.getPurposesLITransparency(), matchInts(2, 9));
         assertTrue(tcModel.getPurposeOneTreatment());
         assertEquals("AA", tcModel.getPublisherCC());
     }

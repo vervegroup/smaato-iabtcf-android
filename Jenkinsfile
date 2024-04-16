@@ -99,19 +99,19 @@ pipeline {
             }
             steps {
                 echo 'Building Smaato Iab decoder'
-                gradlew ':iabtcf-decoder'
+                gradlew ':iabtcf-decoder:assembleRelease'
                 archive('iabtcf-decoder')
 
                 echo 'Building Smaato Iab encoder'
-                gradlew ':iabtcf-encoder'
+                gradlew ':iabtcf-encoder:assembleRelease'
                 archive('iabtcf-encoder')
 
                 echo 'Building Iab extras'
-                gradlew ':iabtcf-extras'
+                gradlew ':iabtcf-extras:assembleRelease'
                 archive('iabtcf-extras')
 
                 echo 'Building Iab extras Jackson'
-                gradlew ':iabtcf-extras-jackson'
+                gradlew ':iabtcf-extras-jackson:assembleRelease'
                 archive('iabtcf-extras-jackson')
 
                 echo 'Building Whole decoder module'

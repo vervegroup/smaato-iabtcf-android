@@ -20,6 +20,9 @@ package com.iabtcf.utils;
  * #L%
  */
 
+import android.annotation.TargetApi;
+import android.os.Build;
+
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -36,6 +39,7 @@ public class BitSetIntIterable extends IntIterable {
         return new BitSetIntIterable((BitSet) bs.clone());
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     public static BitSetIntIterable from(IntIterable ii) {
         if (ii instanceof BitSetIntIterable) {
             return ((BitSetIntIterable) ii).clone();
@@ -57,6 +61,7 @@ public class BitSetIntIterable extends IntIterable {
         return new BitSetIntIterable(bs);
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     public static BitSetIntIterable from(final Collection<Integer> values) {
         BitSet bs = new BitSet();
         values.forEach(bs::set);
@@ -188,6 +193,7 @@ public class BitSetIntIterable extends IntIterable {
             return this;
         }
 
+        @TargetApi(Build.VERSION_CODES.N)
         public Builder add(IntIterable value) {
             for (IntIterator ii = value.intIterator(); ii.hasNext();) {
                 bs.set(ii.nextInt());

@@ -19,6 +19,11 @@ android {
 
 }
 
+dependencies {
+    implementation project(path: ':iabtcf-extras')
+    implementation 'org.codehaus.jackson:jackson-core-asl:1.1.0'
+}
+
 publishing.publications {
     release(MavenPublication) {
         groupId project.group

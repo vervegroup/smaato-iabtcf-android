@@ -13,10 +13,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
+}
+
+dependencies {
+    implementation project(path: ':iabtcf-decoder')
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'commons-io:commons-io:2.4'
+    testImplementation 'org.hamcrest:hamcrest-junit:2.0.0.0'
+    testImplementation project(path: ':iabtcf-decoder')
 }
 
 publishing.publications {
