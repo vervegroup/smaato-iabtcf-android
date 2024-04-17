@@ -115,7 +115,7 @@ distributions {
 
 static def buildVersionName(version) {
     def branch = getBranchName()
-    if (branch.startsWith("release/") || branch.startsWith("release-max/")) {
+    if (branch.startsWith("decoder_release/")) {
         return version
     }
     if (branch.startsWith('feature/')) {
