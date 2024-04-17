@@ -8,7 +8,7 @@
 //*****NOTE******
 // DO NOT PUT HERE ANY CONFIG RELATED TO APP-TEST MODULE
 
-def VERSION = "2.0"
+def VERSION = "2.1"
 def NEXUS_URL = getNexusUrl()
 def versionName = buildVersionName(VERSION)
 
