@@ -2,7 +2,7 @@ def gradlew(command) {
     withEnv([
             "ANDROID_HOME=${env.ANDROID_HOME}"
     ]) {
-        sh "chmod +x gradlew && ./gradlew -Dorg.gradle.java.home=/usr/lib/jvm/java-11-amazon-corretto ${command}"
+        sh "chmod +x gradlew && ./gradlew -Dorg.gradle.java.home=/usr/lib/jvm/java-17-amazon-corretto ${command}"
     }
 }
 
