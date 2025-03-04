@@ -38,6 +38,7 @@ class TCStringDecoder {
         // InputStream is = DECODER.wrap(sis);
         //
         //
+        //Added condition to handle Base64 in Android API level below 26.
         Base64Decoder decoder;
         if (isTestEnvironment()) {
             decoder = new JavaBase64Decoder();
