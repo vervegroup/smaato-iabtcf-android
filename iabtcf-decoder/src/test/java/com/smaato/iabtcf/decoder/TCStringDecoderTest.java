@@ -19,20 +19,22 @@ package com.smaato.iabtcf.decoder;
  * limitations under the License.
  * #L%
  */
+
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Base64;
-
-import org.junit.Test;
-
-import com.smaato.iabtcf.decoder.DecoderOption;
-import com.smaato.iabtcf.decoder.TCString;
-import com.smaato.iabtcf.decoder.TCStringDecoder;
 import com.smaato.iabtcf.exceptions.ByteParseException;
 import com.smaato.iabtcf.exceptions.UnsupportedVersionException;
 
-public class TCStringDecoderTest {
+import org.junit.Before;
+import org.junit.Test;
 
+import java.util.Base64;
+
+public class TCStringDecoderTest {
+    @Before
+    public void setUp() {
+        System.setProperty("IS_TEST_ENV", "true");
+    }
     @Test
     public void testCanCreateModelFromTwoPartsString() {
         String tcString =

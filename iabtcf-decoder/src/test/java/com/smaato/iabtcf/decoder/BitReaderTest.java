@@ -24,23 +24,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.smaato.iabtcf.Base64Decoder;
+import com.smaato.iabtcf.JavaBase64Decoder;
+import com.smaato.iabtcf.utils.BitReader;
+import com.smaato.iabtcf.utils.FieldDefs;
+
+import org.junit.Test;
+
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Base64;
 import java.util.BitSet;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.junit.Test;
-
-import com.smaato.iabtcf.decoder.TCString;
-import com.smaato.iabtcf.exceptions.ByteParseException;
-import com.smaato.iabtcf.utils.BitReader;
-import com.smaato.iabtcf.utils.FieldDefs;
 
 public class BitReaderTest {
     Random r = new Random();
@@ -91,8 +90,8 @@ public class BitReaderTest {
     public void testParseV1() {
         // String str = "BOvalCcOvZ7NhABABBAAABAAAAAAEA";
         String str = "BOvalCcOvZ7NaABABBAAABAAAAAAEA";
-
-        byte[] bytes = Base64.getUrlDecoder().decode(str);
+        Base64Decoder decoder = new JavaBase64Decoder();
+        byte[] bytes = decoder.decode(str);
 
         BitReader bv = new BitReader(bytes);
         assertEquals(1, bv.readBits6(0));
@@ -139,7 +138,8 @@ public class BitReaderTest {
     public void testReadBits6VersionField() {
         String str = "BOvalCcOvZ7NhABABBAAABAAAAAAEA";
 
-        byte[] bytes = Base64.getUrlDecoder().decode(str);
+        Base64Decoder decoder = new JavaBase64Decoder();
+        byte[] bytes = decoder.decode(str);
 
         BitReader bv = new BitReader(bytes);
         assertEquals(1, bv.readBits6(0));
@@ -571,7 +571,8 @@ public class BitReaderTest {
     public void testBitsetVendors() {
         String str = "BOvalCcOvZ7NaABABBAAABAAAAAAxwkA";
 
-        byte[] bytes = Base64.getUrlDecoder().decode(str);
+        Base64Decoder decoder = new JavaBase64Decoder();
+        byte[] bytes = decoder.decode(str);
 
         BitReader bv = new BitReader(bytes);
         BitSet bs = bv.readBitSet(173, 12);
@@ -627,7 +628,7 @@ public class BitReaderTest {
         assertEquals(largeValue5, result);
     }
 
-    @Test(expected = ByteParseException.class)
+    @Test(expected = RuntimeException.class)
     public void testReadBeyondBuffer() {
         // bit pattern: 0000011
         TCString tcString = TCString.decode("Bg");

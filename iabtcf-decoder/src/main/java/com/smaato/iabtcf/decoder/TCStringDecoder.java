@@ -20,13 +20,17 @@ package com.smaato.iabtcf.decoder;
  * #L%
  */
 
-import java.util.Base64;
-import java.util.EnumSet;
+import static com.smaato.iabtcf.utils.DecoderUtil.isTestEnvironment;
 
+import com.smaato.iabtcf.AndroidBase64Decoder;
+import com.smaato.iabtcf.Base64Decoder;
+import com.smaato.iabtcf.JavaBase64Decoder;
 import com.smaato.iabtcf.exceptions.ByteParseException;
 import com.smaato.iabtcf.exceptions.UnsupportedVersionException;
 import com.smaato.iabtcf.utils.BitReader;
 import com.smaato.iabtcf.utils.FieldDefs;
+
+import java.util.EnumSet;
 
 class TCStringDecoder {
     static BitReader vectorFromString(String base64UrlEncodedString) {
@@ -34,7 +38,13 @@ class TCStringDecoder {
         // InputStream is = DECODER.wrap(sis);
         //
         //
-        byte[] bytes = Base64.getUrlDecoder().decode(base64UrlEncodedString);
+        Base64Decoder decoder;
+        if (isTestEnvironment()) {
+            decoder = new JavaBase64Decoder();
+        } else {
+            decoder = new AndroidBase64Decoder();
+        }
+        byte[] bytes = decoder.decode(base64UrlEncodedString);
         return new BitReader(bytes);
     }
 

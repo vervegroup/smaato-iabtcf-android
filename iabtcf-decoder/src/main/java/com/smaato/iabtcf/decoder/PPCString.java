@@ -20,6 +20,7 @@ package com.smaato.iabtcf.decoder;
  * #L%
  */
 
+import static com.smaato.iabtcf.utils.DecoderUtil.isTestEnvironment;
 import static com.smaato.iabtcf.utils.FieldDefs.V1_CMP_ID;
 import static com.smaato.iabtcf.utils.FieldDefs.V1_CMP_VERSION;
 import static com.smaato.iabtcf.utils.FieldDefs.V1_CONSENT_LANGUAGE;
@@ -29,15 +30,23 @@ import static com.smaato.iabtcf.utils.FieldDefs.V1_LAST_UPDATED;
 import static com.smaato.iabtcf.utils.FieldDefs.V1_VENDOR_LIST_VERSION;
 import static com.smaato.iabtcf.utils.FieldDefs.V1_VERSION;
 
-import java.time.Instant;
-import java.util.Base64;
-import java.util.Objects;
+import android.os.Build;
 
+import com.smaato.iabtcf.AndroidBase64Decoder;
+import com.smaato.iabtcf.Base64Decoder;
+import com.smaato.iabtcf.JavaBase64Decoder;
 import com.smaato.iabtcf.exceptions.ByteParseException;
 import com.smaato.iabtcf.exceptions.UnsupportedVersionException;
 import com.smaato.iabtcf.utils.BitReader;
 import com.smaato.iabtcf.utils.FieldDefs;
 import com.smaato.iabtcf.utils.IntIterable;
+
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.TimeZone;
 
 /**
  * Parses TCFv1 Publisher Purposes Consent String Format
@@ -51,7 +60,13 @@ public class PPCString {
 
     public static PPCString decode(String consentString)
             throws IllegalArgumentException, ByteParseException, UnsupportedVersionException {
-        byte[] bytes = Base64.getUrlDecoder().decode(consentString);
+        Base64Decoder decoder;
+        if (isTestEnvironment()) {
+            decoder = new JavaBase64Decoder();
+        } else {
+            decoder = new AndroidBase64Decoder();
+        }
+        byte[] bytes = decoder.decode(consentString);
         return new PPCString(new BitReader(bytes));
     }
 
@@ -59,12 +74,27 @@ public class PPCString {
         return bbv.readBits6(V1_VERSION);
     }
 
-    public Instant getCreated() {
-        return Instant.ofEpochMilli(bbv.readBits36(V1_CREATED) * 100);
+    public Object getCreated() {  // Return type is Object to handle both cases
+        long millis = bbv.readBits36(V1_CREATED) * 100;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return Instant.ofEpochMilli(millis);  // API 26+
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));  // Force UTC
+            return sdf.format(new Date(millis));  // API 21-25 (String format in UTC)
+        }
     }
 
-    public Instant getLastUpdated() {
-        return Instant.ofEpochMilli(bbv.readBits36(V1_LAST_UPDATED) * 100);
+    public Object getLastUpdated() {
+        long millis = bbv.readBits36(V1_LAST_UPDATED) * 100;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return Instant.ofEpochMilli(millis);  // API 26+
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));  // Force UTC
+            return sdf.format(new Date(millis));  // API 21-25 (String format in UTC)
+        }
     }
 
     public int getCmpId() {
