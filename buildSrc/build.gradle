@@ -8,9 +8,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.android.tools.build:gradle:7.1.1'
+    implementation 'com.android.tools.build:gradle:8.9.3'
     implementation "org.javassist:javassist:3.26.0-GA"
-    implementation "com.android.tools:common:30.1.1"
+    implementation "com.android.tools:common:31.9.3"
     implementation localGroovy()
 }
 

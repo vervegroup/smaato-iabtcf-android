@@ -3,13 +3,13 @@ apply plugin: "maven-publish"
 
 
 android {
-    compileSdk 32
+    compileSdk 35
 
     namespace 'com.smaato.iabtcf'
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 35
     }
 
     compileOptions {
@@ -20,8 +20,8 @@ android {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'commons-io:commons-io:2.4'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'commons-io:commons-io:2.19.0'
     testImplementation 'org.hamcrest:hamcrest-junit:2.0.0.0'
 }
 
