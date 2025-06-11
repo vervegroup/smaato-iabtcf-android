@@ -51,8 +51,12 @@ subprojects { project ->
     publishing {
         repositories {
             maven {
-                name = "PublishJfrog"
-                url = uri("https://verve.jfrog.io/ui/native/verve-gradle-release-local/")
+                name = "PublicJfrog"
+                url = uri("https://verve.jfrog.io/artifactory/verve-gradle-release-local")
+                credentials {
+                    username = "paste_username"
+                    password = "paste_password"
+                }
             }
             maven {
                 name "Public"
