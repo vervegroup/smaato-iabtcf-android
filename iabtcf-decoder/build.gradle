@@ -1,7 +1,6 @@
 apply plugin: "com.android.library"
 apply plugin: "maven-publish"
 
-
 android {
     compileSdk 35
 
@@ -13,16 +12,35 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    buildTypes {
+        debug {
+            minifyEnabled false
+            debuggable true
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
+
+    lint {
+        // Suppress warnings about newer API usage
+        disable 'NewApi'
+        checkReleaseBuilds true
+        abortOnError false
+    }
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'junit:junit: 4.13.2'
     testImplementation 'commons-io:commons-io:2.19.0'
-    testImplementation 'org.hamcrest:hamcrest-junit:2.0.0.0'
+    testImplementation 'org.hamcrest:hamcrest-junit: 2.0.0.0'
 }
 
 publishing.publications {
@@ -40,7 +58,7 @@ publishing.publications {
             project.configurations.api.dependencies.withType(org.gradle.api.internal.artifacts.dependencies.AbstractModuleDependency).each {
                 def dependency = dependencies.appendNode('dependency')
                 dependency.appendNode('groupId', it.group)
-                dependency.appendNode('artifactId', it.name)
+                dependency. appendNode('artifactId', it.name)
                 dependency.appendNode('version', it.version)
                 dependency.appendNode('scope', "compile")
             }

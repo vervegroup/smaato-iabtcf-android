@@ -20,20 +20,15 @@ package com.smaato.iabtcf.utils;
  * #L%
  */
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
-import java.util.function.Function;
-
 /**
- * This enum defines all V1 and V2 consent string fields with their offsets and lengths. Since some
+ * This enum defines all V1 and V2 consent string fields with their offsets and lengths.  Since some
  * fields have dynamic values, the offset and length methods are a function of ByteBitVector
  * allowing a dynamic field access to the consent string.
  *
- * The enum takes care to cache the lengths and offsets of fields when appropriate. Whenever
+ * The enum takes care to cache the lengths and offsets of fields when appropriate.  Whenever
  * possible, static field lengths and offsets are cached by the enum using the MemoizingFunction.
  * Due to the dynamic nature of some fields, computing the offsets and lengths can only be done at
- * runtime when a consent string is parsed. For such fields, their values are cached by the
+ * runtime when a consent string is parsed.  For such fields, their values are cached by the
  * ByteBitVector used to parse the consent string.
  *
  * All fields following a dynamic field are treated as a dynamic field.
@@ -86,42 +81,21 @@ public enum FieldDefs {
     PPTC_PUB_PURPOSES_CONSENT(24),
     PPTC_PUB_PURPOSES_LI_TRANSPARENCY(24),
     PPTC_NUM_CUSTOM_PURPOSES(6),
-    PPTC_CUSTOM_PURPOSES_CONSENT(new LengthSupplier() {
-        @Override
-        public Integer apply(BitReader t) {
-            return Integer.valueOf(t.readBits6(PPTC_NUM_CUSTOM_PURPOSES.getOffset(t)));
-        }
-
-        @Override
-        public boolean isDynamic() {
-            return true;
-        }
-    }),
-    PPTC_CUSTOM_PURPOSES_LI_TRANSPARENCY(new LengthSupplier() {
-        @Override
-        public Integer apply(BitReader t) {
-            // same length as PPTC_CUSTOM_PURPOSES_CONSENT
-            return PPTC_CUSTOM_PURPOSES_CONSENT.getLength(t);
-        }
-
-        @Override
-        public boolean isDynamic() {
-            return true;
-        }
-    }),
+    PPTC_CUSTOM_PURPOSES_CONSENT(new PptcCustomPurposesConsentSupplier()),
+    PPTC_CUSTOM_PURPOSES_LI_TRANSPARENCY(new PptcCustomPurposesLiTransparencySupplier()),
 
     // range entry, only field lengths are supported
     NUM_ENTRIES(12, OffsetSupplier.NOT_SUPPORTED),
     IS_A_RANGE(1, OffsetSupplier.NOT_SUPPORTED),
-    START_OR_ONLY_VENDOR_ID(16, OffsetSupplier.NOT_SUPPORTED),
+    START_OR_ONLY_VENDOR_ID(16, OffsetSupplier. NOT_SUPPORTED),
     END_VENDOR_ID(16, OffsetSupplier.NOT_SUPPORTED),
-    TIMESTAMP(36, OffsetSupplier.NOT_SUPPORTED),
+    TIMESTAMP(36, OffsetSupplier. NOT_SUPPORTED),
 
     // publish restriction fields, only field lengths are supported
-    PURPOSE_ID(6, OffsetSupplier.NOT_SUPPORTED),
-    RESTRICTION_TYPE(2, OffsetSupplier.NOT_SUPPORTED),
+    PURPOSE_ID(6, OffsetSupplier. NOT_SUPPORTED),
+    RESTRICTION_TYPE(2, OffsetSupplier. NOT_SUPPORTED),
 
-    CHAR(6, OffsetSupplier.NOT_SUPPORTED),
+    CHAR(6, OffsetSupplier. NOT_SUPPORTED),
 
     // v1 fields
     V1_VERSION(6, 0),
@@ -143,29 +117,23 @@ public enum FieldDefs {
     V1_PPC_PUBLISHER_PURPOSES_VERSION(12, V1_VENDOR_LIST_VERSION),
     V1_PPC_STANDARD_PURPOSES_ALLOWED(24),
     V1_PPC_NUMBER_CUSTOM_PURPOSES(6),
-    V1_PPC_CUSTOM_PURPOSES_BITFIELD(new LengthSupplier() {
-
-        @Override
-        public Integer apply(BitReader t) {
-            return Byte.toUnsignedInt(t.readBits6(FieldDefs.V1_PPC_NUMBER_CUSTOM_PURPOSES.getOffset(t)));
-        }
-
-        @Override
-        public boolean isDynamic() {
-            return true;
-        }
-    });
+    V1_PPC_CUSTOM_PURPOSES_BITFIELD(new V1PpcCustomPurposesBitfieldSupplier());
 
     private OffsetSupplier offset;
     private LengthSupplier length;
     private volatile boolean isDynamic = false;
     private volatile boolean isDynamicInit = false;
 
+
+    // ============================================
+    // ENUM CONSTRUCTORS
+    // ============================================
+
     FieldDefs(int length, FieldDefs field) {
         assert field != this;
 
         this.length = LengthSupplier.constant(length);
-        this.offset = OffsetSupplier.from(field);
+        this.offset = OffsetSupplier. from(field);
     }
 
     FieldDefs(int length, OffsetSupplier offset) {
@@ -174,7 +142,7 @@ public enum FieldDefs {
     }
 
     FieldDefs(final int length, int offset) {
-        this.length = LengthSupplier.constant(length);
+        this.length = LengthSupplier. constant(length);
         this.offset = OffsetSupplier.constant(offset);
     }
 
@@ -193,7 +161,7 @@ public enum FieldDefs {
      * being processed.
      */
     protected boolean isDynamic() {
-        if (!isDynamicInit) {
+        if (! isDynamicInit) {
             isDynamic = offset.isDynamic() || length.isDynamic();
             isDynamicInit = true;
         }
@@ -203,7 +171,6 @@ public enum FieldDefs {
     /**
      * Returns the length of a non-dynamic field.
      */
-    @TargetApi(Build.VERSION_CODES.N)
     public int getLength() {
         assert (length.isDynamic() == false);
 
@@ -232,16 +199,15 @@ public enum FieldDefs {
     }
 
     /**
-     * The offset of the nth field depends on the length and offset of the nth-1 field. This class
+     * The offset of the nth field depends on the length and offset of the nth-1 field.  This class
      * is used to cache offset + length of static fields to avoid querying parent fields.
      *
      * Both the value and it's dynamic state are cached.
      *
      * Dynamic fields are not cached at the enum level and are instead resolved through the BitReader.
      */
-    @TargetApi(Build.VERSION_CODES.N)
     private static abstract class MemoizingFunction
-            implements LengthSupplier, OffsetSupplier, Function<BitReader, Integer> {
+            implements LengthSupplier, OffsetSupplier, BitReaderFunction {
         private volatile boolean dynamicInitialized = false;
         private volatile boolean isDynamic = false;
         private volatile Integer value;
@@ -266,7 +232,7 @@ public enum FieldDefs {
         }
 
         private boolean isDynamicPvt() {
-            if (!dynamicInitialized) {
+            if (! dynamicInitialized) {
                 isDynamic = isDynamic();
                 dynamicInitialized = true;
             }
@@ -274,106 +240,204 @@ public enum FieldDefs {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
-    private interface OffsetSupplier extends Function<BitReader, Integer> {
+    /**
+     * Named static inner class replacing anonymous class for PPTC_CUSTOM_PURPOSES_CONSENT
+     * Reads the dynamic length from PPTC_NUM_CUSTOM_PURPOSES field
+     */
+    private static class PptcCustomPurposesConsentSupplier implements LengthSupplier {
+        @Override
+        public Integer apply(BitReader t) {
+            return Integer.valueOf(t.readBits6(FieldDefs.PPTC_NUM_CUSTOM_PURPOSES. getOffset(t)));
+        }
+
+        @Override
+        public boolean isDynamic() {
+            return true;
+        }
+    }
+
+    /**
+     * Named static inner class replacing anonymous class for PPTC_CUSTOM_PURPOSES_LI_TRANSPARENCY
+     * Uses the same length as PPTC_CUSTOM_PURPOSES_CONSENT
+     */
+    private static class PptcCustomPurposesLiTransparencySupplier implements LengthSupplier {
+        @Override
+        public Integer apply(BitReader t) {
+            // same length as PPTC_CUSTOM_PURPOSES_CONSENT
+            return FieldDefs.PPTC_CUSTOM_PURPOSES_CONSENT.getLength(t);
+        }
+
+        @Override
+        public boolean isDynamic() {
+            return true;
+        }
+    }
+
+    /**
+     * Named static inner class replacing anonymous class for V1_PPC_CUSTOM_PURPOSES_BITFIELD
+     * Reads the dynamic length from V1_PPC_NUMBER_CUSTOM_PURPOSES field
+     */
+    private static class V1PpcCustomPurposesBitfieldSupplier implements LengthSupplier {
+        @Override
+        public Integer apply(BitReader t) {
+            return Byte.toUnsignedInt(t. readBits6(FieldDefs.V1_PPC_NUMBER_CUSTOM_PURPOSES. getOffset(t)));
+        }
+
+        @Override
+        public boolean isDynamic() {
+            return true;
+        }
+    }
+
+    /**
+     * Custom functional interface extending BitReaderFunction for API 21+ compatibility
+     */
+    private interface OffsetSupplier extends BitReaderFunction {
 
         /**
          * This is used when we don't want a field to support offsets.
          */
-        OffsetSupplier NOT_SUPPORTED = new OffsetSupplier() {
-
-            @Override
-            public Integer apply(BitReader t) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public boolean isDynamic() {
-                return false;
-            }
-        };
+        OffsetSupplier NOT_SUPPORTED = new OffsetSupplierNotSupported();
 
         /**
          * A constant offset for static fields.
          */
         static OffsetSupplier constant(int offset) {
-            return new OffsetSupplier() {
-
-                @Override
-                public Integer apply(BitReader t) {
-                    return offset;
-                }
-
-                @Override
-                public boolean isDynamic() {
-                    return false;
-                }
-            };
+            return new OffsetSupplierConstant(offset);
         }
 
         /**
-         * Supplies the offset that's based on the specified field. The offset value is stored to
+         * Supplies the offset that's based on the specified field.  The offset value is stored to
          * avoid re-computing.
          */
         static OffsetSupplier from(final FieldDefs thisEnum) {
-            return new MemoizingFunction() {
-                @Override
-                public boolean isDynamic() {
-                    return thisEnum.isDynamic();
-                }
-
-                @Override
-                public Integer doCompute(BitReader t) {
-                    return thisEnum.getLength(t) + thisEnum.getOffset(t);
-                }
-            };
+            return new OffsetSupplierFrom(thisEnum);
         }
 
         /**
-         * Supplies the offset that's based on the the fields previous field. The offset value is
+         * Supplies the offset that's based on the the fields previous field.  The offset value is
          * stored to avoid re-computing.
          */
         static OffsetSupplier fromPrevious(final FieldDefs thisEnum) {
-            return new MemoizingFunction() {
-
-                @Override
-                public boolean isDynamic() {
-                    return FieldDefs.values()[thisEnum.ordinal() - 1].isDynamic();
-                }
-
-                @Override
-                public Integer doCompute(BitReader t) {
-                    FieldDefs prevEnum = FieldDefs.values()[thisEnum.ordinal() - 1];
-                    return prevEnum.getLength(t) + prevEnum.getOffset(t);
-                }
-            };
+            return new OffsetSupplierFromPrevious(thisEnum);
         }
 
         boolean isDynamic();
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
-    private interface LengthSupplier extends Function<BitReader, Integer> {
+    /**
+     * Named static inner class replacing anonymous class for OffsetSupplier. NOT_SUPPORTED
+     */
+    private static class OffsetSupplierNotSupported implements OffsetSupplier {
+        @Override
+        public Integer apply(BitReader t) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isDynamic() {
+            return false;
+        }
+    }
+
+    /**
+     * Named static inner class replacing anonymous class for OffsetSupplier. constant()
+     */
+    private static class OffsetSupplierConstant implements OffsetSupplier {
+        private final int offset;
+
+        OffsetSupplierConstant(int offset) {
+            this.offset = offset;
+        }
+
+        @Override
+        public Integer apply(BitReader t) {
+            return offset;
+        }
+
+        @Override
+        public boolean isDynamic() {
+            return false;
+        }
+    }
+
+    /**
+     * Named static inner class replacing anonymous class for OffsetSupplier.from()
+     */
+    private static class OffsetSupplierFrom extends MemoizingFunction {
+        private final FieldDefs thisEnum;
+
+        OffsetSupplierFrom(FieldDefs thisEnum) {
+            this.thisEnum = thisEnum;
+        }
+
+        @Override
+        public boolean isDynamic() {
+            return thisEnum.isDynamic();
+        }
+
+        @Override
+        public Integer doCompute(BitReader t) {
+            return thisEnum.getLength(t) + thisEnum.getOffset(t);
+        }
+    }
+
+    /**
+     * Named static inner class replacing anonymous class for OffsetSupplier.fromPrevious()
+     */
+    private static class OffsetSupplierFromPrevious extends MemoizingFunction {
+        private final FieldDefs thisEnum;
+
+        OffsetSupplierFromPrevious(FieldDefs thisEnum) {
+            this.thisEnum = thisEnum;
+        }
+
+        @Override
+        public boolean isDynamic() {
+            return FieldDefs.values()[thisEnum.ordinal() - 1].isDynamic();
+        }
+
+        @Override
+        public Integer doCompute(BitReader t) {
+            FieldDefs prevEnum = FieldDefs.values()[thisEnum.ordinal() - 1];
+            return prevEnum. getLength(t) + prevEnum.getOffset(t);
+        }
+    }
+
+    /**
+     * Custom functional interface extending BitReaderFunction for API 21+ compatibility
+     */
+    private interface LengthSupplier extends BitReaderFunction {
 
         /**
          * A constant length for static fields.
          */
         static LengthSupplier constant(int length) {
-            return new LengthSupplier() {
-
-                @Override
-                public Integer apply(BitReader t) {
-                    return length;
-                }
-
-                @Override
-                public boolean isDynamic() {
-                    return false;
-                }
-            };
+            return new LengthSupplierConstant(length);
         }
 
         boolean isDynamic();
+    }
+
+    /**
+     * Named static inner class replacing anonymous class for LengthSupplier.constant()
+     */
+    private static class LengthSupplierConstant implements LengthSupplier {
+        private final int length;
+
+        LengthSupplierConstant(int length) {
+            this. length = length;
+        }
+
+        @Override
+        public Integer apply(BitReader t) {
+            return length;
+        }
+
+        @Override
+        public boolean isDynamic() {
+            return false;
+        }
     }
 
     /**
@@ -382,11 +446,11 @@ public enum FieldDefs {
     private static class PublisherRestrictionUtils {
         public static int calculateBitRangelength(BitReader t, int numPubRestrictionsOffset) {
             int cptr = numPubRestrictionsOffset;
-            int numPubRestrictions = t.readBits12(numPubRestrictionsOffset);
-            cptr += CORE_NUM_PUB_RESTRICTION.getLength(t);
+            int numPubRestrictions = t. readBits12(numPubRestrictionsOffset);
+            cptr += FieldDefs. CORE_NUM_PUB_RESTRICTION.getLength(t);
 
             for (int i = 0; i < numPubRestrictions; i++) {
-                cptr += (PURPOSE_ID.getLength(t) + RESTRICTION_TYPE.getLength(t));
+                cptr += (FieldDefs.PURPOSE_ID.getLength(t) + FieldDefs.RESTRICTION_TYPE.getLength(t));
                 cptr += BitRangeFieldUtils.calculateRangeLength(t, cptr);
             }
 
@@ -394,17 +458,28 @@ public enum FieldDefs {
         }
 
         public static LengthSupplier lengthSupplier(FieldDefs numPubRestrictionsOffset) {
-            return new LengthSupplier() {
-                @Override
-                public Integer apply(BitReader t) {
-                    return calculateBitRangelength(t, numPubRestrictionsOffset.getOffset(t));
-                }
+            return new PublisherRestrictionLengthSupplier(numPubRestrictionsOffset);
+        }
+    }
 
-                @Override
-                public boolean isDynamic() {
-                    return true;
-                }
-            };
+    /**
+     * Named static inner class replacing anonymous class for PublisherRestrictionUtils.lengthSupplier()
+     */
+    private static class PublisherRestrictionLengthSupplier implements LengthSupplier {
+        private final FieldDefs numPubRestrictionsOffset;
+
+        PublisherRestrictionLengthSupplier(FieldDefs numPubRestrictionsOffset) {
+            this.numPubRestrictionsOffset = numPubRestrictionsOffset;
+        }
+
+        @Override
+        public Integer apply(BitReader t) {
+            return PublisherRestrictionUtils.calculateBitRangelength(t, numPubRestrictionsOffset. getOffset(t));
+        }
+
+        @Override
+        public boolean isDynamic() {
+            return true;
         }
     }
 
@@ -415,12 +490,12 @@ public enum FieldDefs {
         public static int calculateRangeLength(BitReader t, int numEntriesOffset) {
             int cptr = numEntriesOffset;
             int numEntries = t.readBits12(cptr);
-            cptr += NUM_ENTRIES.getLength(t);
+            cptr += FieldDefs.NUM_ENTRIES.getLength(t);
 
             for (int i = 0; i < numEntries; i++) {
-                cptr += IS_A_RANGE.getLength(t) + START_OR_ONLY_VENDOR_ID.getLength(t)
-                        + (t.readBits1(cptr) ? END_VENDOR_ID.getLength(t)
-                                : 0);
+                cptr += FieldDefs.IS_A_RANGE.getLength(t) + FieldDefs.START_OR_ONLY_VENDOR_ID.getLength(t)
+                        + (t.readBits1(cptr) ? FieldDefs.END_VENDOR_ID.getLength(t)
+                        : 0);
             }
 
             return cptr - numEntriesOffset;
@@ -432,7 +507,7 @@ public enum FieldDefs {
 
         public static int calculateBitRangeLength(BitReader t, int isRangeEncodingOffset, int maxVendorIdOffset) {
             boolean isRangeEncoding = t.readBits1(isRangeEncodingOffset);
-            if (!isRangeEncoding) {
+            if (! isRangeEncoding) {
                 return calculateBitLength(t, maxVendorIdOffset);
             } else {
                 return calculateRangeLength(t, isRangeEncodingOffset + 1);
@@ -440,36 +515,54 @@ public enum FieldDefs {
         }
 
         public static LengthSupplier lengthSupplier(FieldDefs isRangeEncoding, FieldDefs maxVendorId) {
-            return new LengthSupplier() {
-                @Override
-                public Integer apply(BitReader t) {
-                    return calculateBitRangeLength(t, isRangeEncoding.getOffset(t), maxVendorId.getOffset(t));
-                }
-
-                @Override
-                public boolean isDynamic() {
-                    return true;
-                }
-            };
+            return new BitRangeFieldLengthSupplier(isRangeEncoding, maxVendorId);
         }
 
         public static LengthSupplier lengthSupplierV1() {
-            return new LengthSupplier() {
-                @Override
-                public Integer apply(BitReader t) {
-                    int isRangeEncodingOffset = FieldDefs.V1_VENDOR_IS_RANGE_ENCODING.getOffset(t);
-                    if (!t.readBits1(isRangeEncodingOffset)) {
-                        return calculateBitLength(t, FieldDefs.V1_VENDOR_MAX_VENDOR_ID.getOffset(t));
-                    } else {
-                        return calculateRangeLength(t, FieldDefs.V1_VENDOR_NUM_ENTRIES.getOffset(t));
-                    }
-                }
+            return new BitRangeFieldV1LengthSupplier();
+        }
+    }
 
-                @Override
-                public boolean isDynamic() {
-                    return true;
-                }
-            };
+    /**
+     * Named static inner class replacing anonymous class for BitRangeFieldUtils.lengthSupplier()
+     */
+    private static class BitRangeFieldLengthSupplier implements LengthSupplier {
+        private final FieldDefs isRangeEncoding;
+        private final FieldDefs maxVendorId;
+
+        BitRangeFieldLengthSupplier(FieldDefs isRangeEncoding, FieldDefs maxVendorId) {
+            this.isRangeEncoding = isRangeEncoding;
+            this.maxVendorId = maxVendorId;
+        }
+
+        @Override
+        public Integer apply(BitReader t) {
+            return BitRangeFieldUtils.calculateBitRangeLength(t, isRangeEncoding. getOffset(t), maxVendorId.getOffset(t));
+        }
+
+        @Override
+        public boolean isDynamic() {
+            return true;
+        }
+    }
+
+    /**
+     * Named static inner class replacing anonymous class for BitRangeFieldUtils.lengthSupplierV1()
+     */
+    private static class BitRangeFieldV1LengthSupplier implements LengthSupplier {
+        @Override
+        public Integer apply(BitReader t) {
+            int isRangeEncodingOffset = FieldDefs.V1_VENDOR_IS_RANGE_ENCODING.getOffset(t);
+            if (! t.readBits1(isRangeEncodingOffset)) {
+                return BitRangeFieldUtils.calculateBitLength(t, FieldDefs.V1_VENDOR_MAX_VENDOR_ID.getOffset(t));
+            } else {
+                return BitRangeFieldUtils.calculateRangeLength(t, FieldDefs.V1_VENDOR_NUM_ENTRIES.getOffset(t));
+            }
+        }
+
+        @Override
+        public boolean isDynamic() {
+            return true;
         }
     }
 }

@@ -8,7 +8,7 @@
 //*****NOTE******
 // DO NOT PUT HERE ANY CONFIG RELATED TO APP-TEST MODULE
 
-def VERSION = "2.4"
+def VERSION = "2.91"
 def versionName = buildVersionName(VERSION)
 
 buildscript {
@@ -54,8 +54,8 @@ subprojects { project ->
                 name = "PublicJfrog"
                 url = uri("https://verve.jfrog.io/artifactory/verve-gradle-release-local")
                 credentials {
-                    username = "paste_username"
-                    password = "paste_password"
+                    username = "madhur.lalit@verve.com"
+                    password = "Jetsetgo@2409"
                 }
             }
             maven {

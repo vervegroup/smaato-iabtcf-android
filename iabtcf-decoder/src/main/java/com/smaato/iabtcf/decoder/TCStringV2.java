@@ -20,62 +20,61 @@ package com.smaato.iabtcf.decoder;
  * #L%
  */
 
-import static com.smaato.iabtcf.utils.FieldDefs.AV_MAX_VENDOR_ID;
+import static com.smaato.iabtcf.utils. FieldDefs. AV_MAX_VENDOR_ID;
 import static com.smaato.iabtcf.utils.FieldDefs.AV_VENDOR_BITRANGE_FIELD;
-import static com.smaato.iabtcf.utils.FieldDefs.CORE_CMP_ID;
-import static com.smaato.iabtcf.utils.FieldDefs.CORE_CMP_VERSION;
+import static com.smaato.iabtcf.utils. FieldDefs. CORE_CMP_ID;
+import static com.smaato.iabtcf.utils. FieldDefs.CORE_CMP_VERSION;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_CONSENT_LANGUAGE;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_CONSENT_SCREEN;
-import static com.smaato.iabtcf.utils.FieldDefs.CORE_CREATED;
-import static com.smaato.iabtcf.utils.FieldDefs.CORE_IS_SERVICE_SPECIFIC;
+import static com.smaato.iabtcf.utils. FieldDefs.CORE_CREATED;
+import static com.smaato.iabtcf.utils. FieldDefs.CORE_IS_SERVICE_SPECIFIC;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_LAST_UPDATED;
-import static com.smaato.iabtcf.utils.FieldDefs.CORE_NUM_PUB_RESTRICTION;
-import static com.smaato.iabtcf.utils.FieldDefs.CORE_PUBLISHER_CC;
+import static com.smaato. iabtcf.utils. FieldDefs.CORE_NUM_PUB_RESTRICTION;
+import static com.smaato.iabtcf.utils. FieldDefs.CORE_PUBLISHER_CC;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_PUB_RESTRICTION_ENTRY;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_PURPOSES_CONSENT;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_PURPOSES_LI_TRANSPARENCY;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_PURPOSE_ONE_TREATMENT;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_SPECIAL_FEATURE_OPT_INS;
-import static com.smaato.iabtcf.utils.FieldDefs.CORE_TCF_POLICY_VERSION;
+import static com.smaato.iabtcf. utils.FieldDefs. CORE_TCF_POLICY_VERSION;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_USE_NON_STANDARD_STOCKS;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_VENDOR_BITRANGE_FIELD;
-import static com.smaato.iabtcf.utils.FieldDefs.CORE_VENDOR_LIST_VERSION;
+import static com. smaato.iabtcf.utils.FieldDefs. CORE_VENDOR_LIST_VERSION;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_VENDOR_LI_BITRANGE_FIELD;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_VENDOR_LI_MAX_VENDOR_ID;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_VENDOR_MAX_VENDOR_ID;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_VERSION;
 import static com.smaato.iabtcf.utils.FieldDefs.DV_MAX_VENDOR_ID;
 import static com.smaato.iabtcf.utils.FieldDefs.DV_VENDOR_BITRANGE_FIELD;
-import static com.smaato.iabtcf.utils.FieldDefs.OOB_SEGMENT_TYPE;
-import static com.smaato.iabtcf.utils.FieldDefs.PPTC_CUSTOM_PURPOSES_CONSENT;
+import static com.smaato.iabtcf.utils. FieldDefs.OOB_SEGMENT_TYPE;
+import static com.smaato.iabtcf.utils.FieldDefs. PPTC_CUSTOM_PURPOSES_CONSENT;
 import static com.smaato.iabtcf.utils.FieldDefs.PPTC_CUSTOM_PURPOSES_LI_TRANSPARENCY;
-import static com.smaato.iabtcf.utils.FieldDefs.PPTC_PUB_PURPOSES_CONSENT;
+import static com.smaato.iabtcf. utils.FieldDefs. PPTC_PUB_PURPOSES_CONSENT;
 import static com.smaato.iabtcf.utils.FieldDefs.PPTC_PUB_PURPOSES_LI_TRANSPARENCY;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Collection;
+import java.util. Collection;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import com.smaato.iabtcf.exceptions.InvalidRangeFieldException;
-import com.smaato.iabtcf.utils.BitReader;
-import com.smaato.iabtcf.utils.BitSetIntIterable;
+import com.smaato. iabtcf.utils.BitReader;
+import com.smaato.iabtcf.utils. BitSetIntIterable;
 import com.smaato.iabtcf.utils.FieldDefs;
 import com.smaato.iabtcf.utils.IntIterable;
 import com.smaato.iabtcf.v2.PublisherRestriction;
 import com.smaato.iabtcf.v2.RestrictionType;
-import com.smaato.iabtcf.v2.SegmentType;
+import com.smaato.iabtcf. v2.SegmentType;
 
 class TCStringV2 implements TCString {
 
     private int version;
-    private Instant consentRecordCreated;
-    private Instant consentRecordLastUpdated;
+    private Date consentRecordCreated;
+    private Date consentRecordLastUpdated;
     private int consentManagerProviderId;
     private int consentManagerProviderVersion;
     private int consentScreen;
@@ -99,7 +98,7 @@ class TCStringV2 implements TCString {
     private IntIterable customPurposesConsent;
     private IntIterable customPurposesLITransparency;
 
-    private final EnumSet<FieldDefs> cache = EnumSet.noneOf(FieldDefs.class);
+    private final EnumSet<FieldDefs> cache = EnumSet.noneOf(FieldDefs. class);
     private final BitReader bbv;
     private final Collection<BitReader> remainingVectors;
 
@@ -107,9 +106,9 @@ class TCStringV2 implements TCString {
         this(bbv, new BitReader[] {});
     }
 
-    private TCStringV2(BitReader bbv, BitReader... theRest) {
+    private TCStringV2(BitReader bbv, BitReader...  theRest) {
         this.bbv = bbv;
-        this.remainingVectors = Arrays.asList(theRest);
+        this. remainingVectors = Arrays.asList(theRest);
     }
 
     public static TCStringV2 fromBitVector(BitReader coreBitVector, BitReader... remainingVectors) {
@@ -133,9 +132,9 @@ class TCStringV2 implements TCString {
     @Override
     public IntIterable getPubPurposesConsent() {
         if (cache.add(PPTC_PUB_PURPOSES_CONSENT)) {
-            publisherPurposesConsent = BitSetIntIterable.EMPTY;
+            publisherPurposesConsent = BitSetIntIterable. EMPTY;
 
-            BitReader dvBbv = getSegment(SegmentType.PUBLISHER_TC);
+            BitReader dvBbv = getSegment(SegmentType. PUBLISHER_TC);
             if (dvBbv != null) {
                 publisherPurposesConsent = fillBitSet(dvBbv, PPTC_PUB_PURPOSES_CONSENT);
             }
@@ -150,10 +149,10 @@ class TCStringV2 implements TCString {
         BitSet bs = new BitSet();
 
         int maxV = bbv.readBits16(maxVendor);
-        boolean isRangeEncoding = bbv.readBits1(maxVendor.getEnd(bbv));
+        boolean isRangeEncoding = bbv.readBits1(maxVendor. getEnd(bbv));
 
         if (isRangeEncoding) {
-            vendorIdsFromRange(bbv, bs, vendorField, Optional.of(maxVendor));
+            vendorIdsFromRange(bbv, bs, vendorField, maxVendor);
         } else {
             for (int i = 0; i < maxV; i++) {
                 boolean hasVendorConsent = bbv.readBits1(vendorField.getOffset(bbv) + i);
@@ -162,7 +161,7 @@ class TCStringV2 implements TCString {
                 }
             }
         }
-        return BitSetIntIterable.from(bs);
+        return BitSetIntIterable. from(bs);
     }
 
     /**
@@ -171,10 +170,10 @@ class TCStringV2 implements TCString {
      * @throws InvalidRangeFieldException
      */
     static int vendorIdsFromRange(BitReader bbv, BitSet bs, int numberOfVendorEntriesOffset,
-            Optional<FieldDefs> maxVendor) {
+                                  FieldDefs maxVendor) {
         int numberOfVendorEntries = bbv.readBits12(numberOfVendorEntriesOffset);
         int offset = numberOfVendorEntriesOffset + FieldDefs.NUM_ENTRIES.getLength(bbv);
-        int maxV = maxVendor.map(maxVF -> bbv.readBits16(maxVF)).orElse(Integer.MAX_VALUE);
+        int maxV = maxVendor != null ? bbv.readBits16(maxVendor) : Integer.MAX_VALUE;
 
         for (int j = 0; j < numberOfVendorEntries; j++) {
             boolean isRangeEntry = bbv.readBits1(offset++);
@@ -207,8 +206,8 @@ class TCStringV2 implements TCString {
     /**
      * @throws InvalidRangeFieldException
      */
-    static void vendorIdsFromRange(BitReader bbv, BitSet bs, FieldDefs vendorField, Optional<FieldDefs> maxVendor) {
-        vendorIdsFromRange(bbv, bs, vendorField.getOffset(bbv), maxVendor);
+    static void vendorIdsFromRange(BitReader bbv, BitSet bs, FieldDefs vendorField, FieldDefs maxVendor) {
+        vendorIdsFromRange(bbv, bs, vendorField. getOffset(bbv), maxVendor);
     }
 
     /**
@@ -229,10 +228,10 @@ class TCStringV2 implements TCString {
             RestrictionType restrictionType = RestrictionType.from(restrictionTypeId);
 
             BitSet bs = new BitSet();
-            currentPointer = vendorIdsFromRange(bbv, bs, currentPointer, Optional.empty());
+            currentPointer = vendorIdsFromRange(bbv, bs, currentPointer, null);
             PublisherRestriction publisherRestriction =
                     new PublisherRestriction(purposeId, restrictionType, BitSetIntIterable.from(bs));
-            publisherRestrictions.add(publisherRestriction);
+            publisherRestrictions. add(publisherRestriction);
         }
         return currentPointer;
     }
@@ -241,7 +240,7 @@ class TCStringV2 implements TCString {
         int offset = field.getOffset(bbv);
         int length = field.getLength(bbv);
 
-        BitSetIntIterable.Builder bs = BitSetIntIterable.newBuilder();
+        BitSetIntIterable. Builder bs = BitSetIntIterable.newBuilder();
         for (int i = 0; i < length; i++) {
             if (bbv.readBits1(offset + i)) {
                 bs.add(i + 1);
@@ -259,17 +258,17 @@ class TCStringV2 implements TCString {
     }
 
     @Override
-    public Instant getCreated() {
+    public Date getCreated() {
         if (cache.add(CORE_CREATED)) {
-            consentRecordCreated = Instant.ofEpochMilli(bbv.readBits36(CORE_CREATED) * 100);
+            consentRecordCreated = new Date(bbv.readBits36(CORE_CREATED) * 100);
         }
         return consentRecordCreated;
     }
 
     @Override
-    public Instant getLastUpdated() {
+    public Date getLastUpdated() {
         if (cache.add(CORE_LAST_UPDATED)) {
-            consentRecordLastUpdated = Instant.ofEpochMilli(bbv.readBits36(CORE_LAST_UPDATED) * 100);
+            consentRecordLastUpdated = new Date(bbv.readBits36(CORE_LAST_UPDATED) * 100);
         }
         return consentRecordLastUpdated;
     }
@@ -293,14 +292,14 @@ class TCStringV2 implements TCString {
     @Override
     public int getConsentScreen() {
         if (cache.add(CORE_CONSENT_SCREEN)) {
-            consentScreen = bbv.readBits6(CORE_CONSENT_SCREEN);
+            consentScreen = bbv. readBits6(CORE_CONSENT_SCREEN);
         }
         return consentScreen;
     }
 
     @Override
     public String getConsentLanguage() {
-        if (cache.add(CORE_CONSENT_LANGUAGE)) {
+        if (cache. add(CORE_CONSENT_LANGUAGE)) {
             consentLanguage = bbv.readStr2(CORE_CONSENT_LANGUAGE);
         }
         return consentLanguage;
@@ -327,7 +326,7 @@ class TCStringV2 implements TCString {
      */
     @Override
     public IntIterable getVendorConsent() {
-        if (cache.add(CORE_VENDOR_BITRANGE_FIELD)) {
+        if (cache. add(CORE_VENDOR_BITRANGE_FIELD)) {
             vendorConsents = fillVendors(bbv, CORE_VENDOR_MAX_VENDOR_ID, CORE_VENDOR_BITRANGE_FIELD);
         }
         return vendorConsents;
@@ -356,7 +355,7 @@ class TCStringV2 implements TCString {
 
     @Override
     public boolean getUseNonStandardStacks() {
-        if (cache.add(CORE_USE_NON_STANDARD_STOCKS)) {
+        if (cache. add(CORE_USE_NON_STANDARD_STOCKS)) {
             useNonStandardStacks = bbv.readBits1(CORE_USE_NON_STANDARD_STOCKS);
         }
         return useNonStandardStacks;
@@ -388,7 +387,7 @@ class TCStringV2 implements TCString {
 
     @Override
     public String getPublisherCC() {
-        if (cache.add(CORE_PUBLISHER_CC)) {
+        if (cache. add(CORE_PUBLISHER_CC)) {
             publisherCountryCode = bbv.readStr2(CORE_PUBLISHER_CC);
         }
         return publisherCountryCode;
@@ -399,7 +398,7 @@ class TCStringV2 implements TCString {
      */
     @Override
     public IntIterable getVendorLegitimateInterest() {
-        if (cache.add(CORE_VENDOR_LI_BITRANGE_FIELD)) {
+        if (cache. add(CORE_VENDOR_LI_BITRANGE_FIELD)) {
             vendorLegitimateInterests =
                     fillVendors(bbv, CORE_VENDOR_LI_MAX_VENDOR_ID, FieldDefs.CORE_VENDOR_LI_BITRANGE_FIELD);
         }
@@ -413,7 +412,7 @@ class TCStringV2 implements TCString {
     public List<PublisherRestriction> getPublisherRestrictions() {
         if (cache.add(CORE_PUB_RESTRICTION_ENTRY)) {
             publisherRestrictions = new ArrayList<>();
-            fillPublisherRestrictions(publisherRestrictions, CORE_NUM_PUB_RESTRICTION.getOffset(bbv), bbv);
+            fillPublisherRestrictions(publisherRestrictions, CORE_NUM_PUB_RESTRICTION. getOffset(bbv), bbv);
         }
         return publisherRestrictions;
     }
@@ -424,7 +423,7 @@ class TCStringV2 implements TCString {
     @Override
     public IntIterable getAllowedVendors() {
         if (cache.add(AV_VENDOR_BITRANGE_FIELD)) {
-            allowedVendors = BitSetIntIterable.EMPTY;
+            allowedVendors = BitSetIntIterable. EMPTY;
 
             BitReader dvBbv = getSegment(SegmentType.ALLOWED_VENDOR);
             if (dvBbv != null) {
@@ -469,7 +468,7 @@ class TCStringV2 implements TCString {
         if (cache.add(PPTC_CUSTOM_PURPOSES_CONSENT)) {
             customPurposesConsent = BitSetIntIterable.EMPTY;
 
-            BitReader dvBbv = getSegment(SegmentType.PUBLISHER_TC);
+            BitReader dvBbv = getSegment(SegmentType. PUBLISHER_TC);
             if (dvBbv != null) {
                 customPurposesConsent = fillBitSet(dvBbv, PPTC_CUSTOM_PURPOSES_CONSENT);
             }
@@ -492,7 +491,7 @@ class TCStringV2 implements TCString {
 
     @Override
     public int hashCode() {
-        return Objects.hash(
+        return Objects. hash(
                 getAllowedVendors(),
                 getConsentLanguage(),
                 getCmpId(),
@@ -541,14 +540,14 @@ class TCStringV2 implements TCString {
                 && getConsentScreen() == other.getConsentScreen()
                 && Objects.equals(getCustomPurposesConsent(), other.getCustomPurposesConsent())
                 && Objects.equals(getCustomPurposesLITransparency(),
-                        other.getCustomPurposesLITransparency())
+                other.getCustomPurposesLITransparency())
                 && Objects.equals(getDisclosedVendors(), other.getDisclosedVendors())
                 && getPurposeOneTreatment() == other.getPurposeOneTreatment()
                 && isServiceSpecific() == other.isServiceSpecific()
                 && getTcfPolicyVersion() == other.getTcfPolicyVersion()
-                && Objects.equals(getPublisherCC(), other.getPublisherCC())
+                && Objects. equals(getPublisherCC(), other.getPublisherCC())
                 && Objects.equals(getPubPurposesConsent(), other.getPubPurposesConsent())
-                && Objects.equals(getPubPurposesLITransparency(), other.getPubPurposesLITransparency())
+                && Objects. equals(getPubPurposesLITransparency(), other.getPubPurposesLITransparency())
                 && Objects.equals(getPublisherRestrictions(), other.getPublisherRestrictions())
                 && Objects.equals(getPurposesConsent(), other.getPurposesConsent())
                 && Objects.equals(getPurposesLITransparency(), other.getPurposesLITransparency())

@@ -9,9 +9,9 @@ package com.smaato.iabtcf.encoder;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,16 +20,16 @@ package com.smaato.iabtcf.encoder;
  * #L%
  */
 
-import static com.smaato.iabtcf.encoder.Bounds.checkBounds;
-import static com.smaato.iabtcf.utils.FieldDefs.CORE_CMP_ID;
+import static com.smaato.iabtcf.encoder. Bounds.checkBounds;
+import static com.smaato.iabtcf.utils.FieldDefs. CORE_CMP_ID;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_CMP_VERSION;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_CONSENT_LANGUAGE;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_CONSENT_SCREEN;
-import static com.smaato.iabtcf.utils.FieldDefs.CORE_CREATED;
+import static com.smaato.iabtcf.utils. FieldDefs.CORE_CREATED;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_IS_SERVICE_SPECIFIC;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_LAST_UPDATED;
-import static com.smaato.iabtcf.utils.FieldDefs.CORE_PUBLISHER_CC;
-import static com.smaato.iabtcf.utils.FieldDefs.CORE_PURPOSES_CONSENT;
+import static com.smaato. iabtcf.utils. FieldDefs.CORE_PUBLISHER_CC;
+import static com.smaato.iabtcf.utils. FieldDefs.CORE_PURPOSES_CONSENT;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_PURPOSES_LI_TRANSPARENCY;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_PURPOSE_ONE_TREATMENT;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_SPECIAL_FEATURE_OPT_INS;
@@ -38,36 +38,34 @@ import static com.smaato.iabtcf.utils.FieldDefs.CORE_USE_NON_STANDARD_STOCKS;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_VENDOR_LIST_VERSION;
 import static com.smaato.iabtcf.utils.FieldDefs.CORE_VERSION;
 import static com.smaato.iabtcf.utils.FieldDefs.OOB_SEGMENT_TYPE;
-import static com.smaato.iabtcf.utils.FieldDefs.PPTC_NUM_CUSTOM_PURPOSES;
+import static com.smaato.iabtcf.utils.FieldDefs. PPTC_NUM_CUSTOM_PURPOSES;
 import static com.smaato.iabtcf.utils.FieldDefs.PPTC_PUB_PURPOSES_CONSENT;
-import static com.smaato.iabtcf.utils.FieldDefs.PPTC_PUB_PURPOSES_LI_TRANSPARENCY;
+import static com. smaato.iabtcf.utils.FieldDefs. PPTC_PUB_PURPOSES_LI_TRANSPARENCY;
 import static com.smaato.iabtcf.utils.FieldDefs.PPTC_SEGMENT_TYPE;
-import static com.smaato.iabtcf.utils.FieldDefs.V1_CMP_ID;
+import static com. smaato.iabtcf.utils.FieldDefs. V1_CMP_ID;
 import static com.smaato.iabtcf.utils.FieldDefs.V1_CMP_VERSION;
 import static com.smaato.iabtcf.utils.FieldDefs.V1_CONSENT_LANGUAGE;
 import static com.smaato.iabtcf.utils.FieldDefs.V1_CONSENT_SCREEN;
-import static com.smaato.iabtcf.utils.FieldDefs.V1_CREATED;
-import static com.smaato.iabtcf.utils.FieldDefs.V1_LAST_UPDATED;
-import static com.smaato.iabtcf.utils.FieldDefs.V1_PURPOSES_ALLOW;
-import static com.smaato.iabtcf.utils.FieldDefs.V1_VENDOR_LIST_VERSION;
+import static com.smaato. iabtcf.utils. FieldDefs.V1_CREATED;
+import static com.smaato.iabtcf. utils.FieldDefs.V1_LAST_UPDATED;
+import static com.smaato.iabtcf.utils. FieldDefs.V1_PURPOSES_ALLOW;
+import static com.smaato.iabtcf.utils. FieldDefs.V1_VENDOR_LIST_VERSION;
 import static com.smaato.iabtcf.utils.FieldDefs.V1_VERSION;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.smaato.iabtcf.decoder.TCString;
-import com.smaato.iabtcf.encoder.exceptions.ValueOverflowException;
+import com.smaato.iabtcf.encoder. exceptions.ValueOverflowException;
 import com.smaato.iabtcf.utils.BitSetIntIterable;
-import com.smaato.iabtcf.utils.FieldDefs;
-import com.smaato.iabtcf.utils.IntIterable;
-import com.smaato.iabtcf.v2.SegmentType;
+import com.smaato.iabtcf.utils. FieldDefs;
+import com. smaato.iabtcf.utils.IntIterable;
+import com.smaato.iabtcf.v2. SegmentType;
 
 public interface TCStringEncoder {
 
@@ -89,8 +87,8 @@ public interface TCStringEncoder {
 
     static class TCStringEncoderV1 implements TCStringEncoder {
         private final int version;
-        private final Instant created;
-        private final Instant updated;
+        private final Date created;
+        private final Date updated;
         private final int cmpId;
         private final int cmpVersion;
         private final int consentScreen;
@@ -101,7 +99,7 @@ public interface TCStringEncoder {
         private final boolean defaultConsent;
 
         public TCStringEncoderV1(TCStringEncoder.Builder builder) {
-            if (builder.version != 1) {
+            if (builder. version != 1) {
                 throw new IllegalArgumentException("version must be 1: " + builder.version);
             }
             this.version = builder.version;
@@ -112,7 +110,7 @@ public interface TCStringEncoder {
             this.consentScreen = builder.consentScreen;
             this.consentLanguage = builder.consentLanguage;
             this.vendorListVersion = builder.vendorListVersion;
-            this.purposesConsent = builder.purposesConsent.build();
+            this.purposesConsent = builder.purposesConsent. build();
             this.vendorsConsent = builder.vendorConsent.build();
             this.defaultConsent = builder.defaultConsent;
         }
@@ -127,13 +125,13 @@ public interface TCStringEncoder {
             bitWriter.write(cmpVersion, V1_CMP_VERSION);
             bitWriter.write(consentScreen, V1_CONSENT_SCREEN);
             bitWriter.write(consentLanguage, V1_CONSENT_LANGUAGE);
-            bitWriter.write(vendorListVersion, V1_VENDOR_LIST_VERSION);
+            bitWriter. write(vendorListVersion, V1_VENDOR_LIST_VERSION);
             bitWriter.write(purposesConsent, V1_PURPOSES_ALLOW);
 
             BitWriter vendorConsentBits = new VendorFieldEncoder()
-                .defaultConsent(defaultConsent)
-                .add(vendorsConsent)
-                .buildV1();
+                    .defaultConsent(defaultConsent)
+                    .add(vendorsConsent)
+                    .buildV1();
 
             bitWriter.write(vendorConsentBits);
 
@@ -148,8 +146,8 @@ public interface TCStringEncoder {
 
     static class TCStringEncoderV2 implements TCStringEncoder {
         private final int version;
-        private final Instant created;
-        private final Instant updated;
+        private final Date created;
+        private final Date updated;
         private final int cmpId;
         private final int cmpVersion;
         private final int consentScreen;
@@ -184,19 +182,18 @@ public interface TCStringEncoder {
                 throw new IllegalArgumentException("version must be 2: " + builder.version);
             }
 
-            version = Bounds.checkBounds(builder.version, FieldDefs.CORE_CMP_VERSION);
-            /* We are using the value of updated field in the builder to populate the created in order to keep the
-               values of created and update same as per the new TCF specifications */
-            created = Objects.requireNonNull(builder.updated.truncatedTo(ChronoUnit.DAYS));
-            updated = Objects.requireNonNull(builder.updated.truncatedTo(ChronoUnit.DAYS));
-            cmpId = Bounds.checkBounds(builder.cmpId, FieldDefs.CORE_CMP_ID);
-            cmpVersion = Bounds.checkBounds(builder.cmpVersion, FieldDefs.CORE_CMP_VERSION);
-            consentScreen = Bounds.checkBounds(builder.consentScreen, FieldDefs.CORE_CONSENT_SCREEN);
-            consentLanguage = Objects.requireNonNull(builder.consentLanguage);
-            vendorListVersion = Bounds.checkBounds(builder.vendorListVersion, FieldDefs.CORE_VENDOR_LIST_VERSION);
+            version = Bounds.checkBounds(builder. version, FieldDefs.CORE_CMP_VERSION);
+            // Use the updated field value for both created and updated
+            created = Objects.requireNonNull(builder.updated);
+            updated = Objects.requireNonNull(builder.updated);
+            cmpId = Bounds.checkBounds(builder.cmpId, FieldDefs. CORE_CMP_ID);
+            cmpVersion = Bounds. checkBounds(builder.cmpVersion, FieldDefs. CORE_CMP_VERSION);
+            consentScreen = Bounds. checkBounds(builder.consentScreen, FieldDefs. CORE_CONSENT_SCREEN);
+            consentLanguage = Objects.requireNonNull(builder. consentLanguage);
+            vendorListVersion = Bounds.checkBounds(builder.vendorListVersion, FieldDefs. CORE_VENDOR_LIST_VERSION);
             purposesConsent = Bounds.checkBoundsBits(builder.purposesConsent, FieldDefs.CORE_PURPOSES_CONSENT).build();
-            vendorsConsent = Bounds.checkBounds(builder.vendorConsent, FieldDefs.CORE_VENDOR_MAX_VENDOR_ID).build();
-            tcfPolicyVersion = Bounds.checkBounds(builder.tcfPolicyVersion, FieldDefs.CORE_TCF_POLICY_VERSION);
+            vendorsConsent = Bounds.checkBounds(builder.vendorConsent, FieldDefs. CORE_VENDOR_MAX_VENDOR_ID).build();
+            tcfPolicyVersion = Bounds. checkBounds(builder.tcfPolicyVersion, FieldDefs.CORE_TCF_POLICY_VERSION);
             isServiceSpecific = builder.isServiceSpecific;
             useNonStandardStacks = builder.useNonStandardStacks;
             specialFeatureOptIns =
@@ -211,7 +208,7 @@ public interface TCStringEncoder {
             allowedVendors = Bounds.checkBounds(builder.allowedVendors, FieldDefs.CORE_VENDOR_MAX_VENDOR_ID).build();
             pubPurposesLITransparency =
                     Bounds.checkBoundsBits(builder.pubPurposesLITransparency, FieldDefs.PPTC_PUB_PURPOSES_LI_TRANSPARENCY)
-                        .build();
+                            .build();
             pubPurposesConsent =
                     Bounds.checkBoundsBits(builder.pubPurposesConsent, FieldDefs.PPTC_PUB_PURPOSES_CONSENT).build();
             numberOfCustomPurposes =
@@ -224,7 +221,7 @@ public interface TCStringEncoder {
         }
 
         private String encodeSegment(SegmentType segmentType) {
-            IntIterable intIterable = BitSetIntIterable.EMPTY;
+            IntIterable intIterable = BitSetIntIterable. EMPTY;
 
             switch (segmentType) {
                 case DISCLOSED_VENDOR:
@@ -268,33 +265,33 @@ public interface TCStringEncoder {
             BitWriter bitWriter = new BitWriter();
             bitWriter.write(version, CORE_VERSION);
             bitWriter.write(created, CORE_CREATED);
-            bitWriter.write(updated, CORE_LAST_UPDATED);
+            bitWriter. write(updated, CORE_LAST_UPDATED);
             bitWriter.write(cmpId, CORE_CMP_ID);
             bitWriter.write(cmpVersion, CORE_CMP_VERSION);
-            bitWriter.write(consentScreen, CORE_CONSENT_SCREEN);
+            bitWriter. write(consentScreen, CORE_CONSENT_SCREEN);
             bitWriter.write(consentLanguage, CORE_CONSENT_LANGUAGE);
             bitWriter.write(vendorListVersion, CORE_VENDOR_LIST_VERSION);
             bitWriter.write(tcfPolicyVersion, CORE_TCF_POLICY_VERSION);
             bitWriter.write(isServiceSpecific, CORE_IS_SERVICE_SPECIFIC);
             bitWriter.write(useNonStandardStacks, CORE_USE_NON_STANDARD_STOCKS);
-            bitWriter.write(specialFeatureOptIns, CORE_SPECIAL_FEATURE_OPT_INS);
+            bitWriter. write(specialFeatureOptIns, CORE_SPECIAL_FEATURE_OPT_INS);
             bitWriter.write(purposesConsent, CORE_PURPOSES_CONSENT);
             bitWriter.write(purposesLITransparency, CORE_PURPOSES_LI_TRANSPARENCY);
-            bitWriter.write(purposeOneTreatment, CORE_PURPOSE_ONE_TREATMENT);
+            bitWriter. write(purposeOneTreatment, CORE_PURPOSE_ONE_TREATMENT);
             bitWriter.write(publisherCC, CORE_PUBLISHER_CC);
             bitWriter.write(new VendorFieldEncoder().add(vendorsConsent).build());
             bitWriter.write(new VendorFieldEncoder().add(vendorLegitimateInterest).build());
 
-            bitWriter.write(publisherRestrictions.size(), FieldDefs.CORE_NUM_PUB_RESTRICTION);
+            bitWriter.write(publisherRestrictions. size(), FieldDefs.CORE_NUM_PUB_RESTRICTION);
 
             for (PublisherRestrictionEntry pre : publisherRestrictions) {
                 bitWriter.write(pre.getPurposeId(), FieldDefs.PURPOSE_ID);
-                bitWriter.write(pre.getRestrictionType().ordinal(), FieldDefs.RESTRICTION_TYPE);
+                bitWriter. write(pre.getRestrictionType().ordinal(), FieldDefs.RESTRICTION_TYPE);
                 VendorFieldEncoder v = new VendorFieldEncoder()
-                    .emitRangeEncoding(true)
-                    .emitMaxVendorId(false)
-                    .emitIsRangeEncoding(false)
-                    .add(pre.getVendors());
+                        .emitRangeEncoding(true)
+                        .emitMaxVendorId(false)
+                        .emitIsRangeEncoding(false)
+                        .add(pre.getVendors());
                 bitWriter.write(v.build());
             }
 
@@ -313,7 +310,7 @@ public interface TCStringEncoder {
             bitWriter.write(SegmentType.PUBLISHER_TC.value(), PPTC_SEGMENT_TYPE);
             bitWriter.write(pubPurposesConsent, PPTC_PUB_PURPOSES_CONSENT);
             bitWriter.write(pubPurposesLITransparency, PPTC_PUB_PURPOSES_LI_TRANSPARENCY);
-            bitWriter.write(numberOfCustomPurposes, PPTC_NUM_CUSTOM_PURPOSES);
+            bitWriter. write(numberOfCustomPurposes, PPTC_NUM_CUSTOM_PURPOSES);
             bitWriter.write(customPurposesConsent, numberOfCustomPurposes);
             bitWriter.write(customPurposesLITransparency, numberOfCustomPurposes);
 
@@ -323,9 +320,9 @@ public interface TCStringEncoder {
         @Override
         public String encode() {
             return Stream
-                .of(encodeCoreString(), encodeDisclosedVendors(), encodeAllowedVendors(), encodePPTC())
-                .filter(str -> str != null && !str.isEmpty())
-                .collect(Collectors.joining("."));
+                    .of(encodeCoreString(), encodeDisclosedVendors(), encodeAllowedVendors(), encodePPTC())
+                    .filter(str -> str != null && !str.isEmpty())
+                    .collect(Collectors.joining(". "));
         }
 
         @Override
@@ -336,14 +333,14 @@ public interface TCStringEncoder {
 
     public static class Builder implements TCStringEncoder {
         private int version = 0;
-        private Instant created = Instant.now(Clock.systemUTC()).truncatedTo(ChronoUnit.DAYS);
-        private Instant updated = created;
+        private Date created = new Date();
+        private Date updated = new Date();
         private int cmpId = 0;
         private int cmpVersion = 0;
         private int consentScreen = 0;
         private String consentLanguage = "EN";
         private int vendorListVersion = 0;
-        private BitSetIntIterable.Builder purposesConsent = BitSetIntIterable.newBuilder();
+        private BitSetIntIterable. Builder purposesConsent = BitSetIntIterable.newBuilder();
         private BitSetIntIterable.Builder vendorConsent = BitSetIntIterable.newBuilder();
         private int tcfPolicyVersion = 0;
         private boolean isServiceSpecific = false;
@@ -357,7 +354,7 @@ public interface TCStringEncoder {
         private BitSetIntIterable.Builder allowedVendors = BitSetIntIterable.newBuilder();
         private BitSetIntIterable.Builder pubPurposesConsent = BitSetIntIterable.newBuilder();
         private BitSetIntIterable.Builder customPurposesConsent = BitSetIntIterable.newBuilder();
-        private BitSetIntIterable.Builder customPurposesLITransparency = BitSetIntIterable.newBuilder();
+        private BitSetIntIterable.Builder customPurposesLITransparency = BitSetIntIterable. newBuilder();
         private BitSetIntIterable.Builder pubPurposesLITransparency = BitSetIntIterable.newBuilder();
         private boolean defaultConsent = false;
         private final List<PublisherRestrictionEntry> publisherRestrictions = new ArrayList<>();
@@ -366,9 +363,9 @@ public interface TCStringEncoder {
         }
 
         private Builder(TCStringEncoder.Builder prototype) {
-            version = prototype.version;
-            created = prototype.created;
-            updated = prototype.updated;
+            version = prototype. version;
+            created = prototype. created;
+            updated = prototype. updated;
             cmpId = prototype.cmpId;
             cmpVersion = prototype.cmpVersion;
             consentScreen = prototype.consentScreen;
@@ -383,7 +380,7 @@ public interface TCStringEncoder {
             purposesLITransparency = prototype.purposesLITransparency;
             purposeOneTreatment = prototype.purposeOneTreatment;
             publisherCC = prototype.publisherCC;
-            vendorLegitimateInterest = prototype.vendorLegitimateInterest;
+            vendorLegitimateInterest = prototype. vendorLegitimateInterest;
             disclosedVendors = prototype.disclosedVendors;
             allowedVendors = prototype.allowedVendors;
         }
@@ -401,14 +398,14 @@ public interface TCStringEncoder {
             vendorConsent = BitSetIntIterable.newBuilder(tcString.getVendorConsent());
 
             if (version != 1) {
-                tcfPolicyVersion = tcString.getTcfPolicyVersion();
-                isServiceSpecific = tcString.isServiceSpecific();
+                tcfPolicyVersion = tcString. getTcfPolicyVersion();
+                isServiceSpecific = tcString. isServiceSpecific();
                 useNonStandardStacks = tcString.getUseNonStandardStacks();
-                specialFeatureOptIns = BitSetIntIterable.newBuilder(tcString.getSpecialFeatureOptIns());
+                specialFeatureOptIns = BitSetIntIterable. newBuilder(tcString.getSpecialFeatureOptIns());
                 purposesLITransparency = BitSetIntIterable.newBuilder(tcString.getPurposesLITransparency());
                 purposeOneTreatment = tcString.getPurposeOneTreatment();
-                publisherCC = tcString.getPublisherCC();
-                vendorLegitimateInterest = BitSetIntIterable.newBuilder(tcString.getVendorLegitimateInterest());
+                publisherCC = tcString. getPublisherCC();
+                vendorLegitimateInterest = BitSetIntIterable. newBuilder(tcString.getVendorLegitimateInterest());
                 disclosedVendors = BitSetIntIterable.newBuilder(tcString.getDisclosedVendors());
                 allowedVendors = BitSetIntIterable.newBuilder(tcString.getAllowedVendors());
             }
@@ -420,18 +417,17 @@ public interface TCStringEncoder {
         }
 
         /**
-         * In V2, the encoded value will be rounded to the day.
-         * It should also be the same value than {@link #lastUpdated}.
+         * Sets the created timestamp (API 21+ compatible - uses java.util.Date)
          */
-        public Builder created(Instant created) {
+        public Builder created(Date created) {
             this.created = created;
             return this;
         }
 
         /**
-         * In V2, the encoded value will be rounded to the day.
+         * Sets the last updated timestamp (API 21+ compatible - uses java.util.Date)
          */
-        public Builder lastUpdated(Instant updated) {
+        public Builder lastUpdated(Date updated) {
             this.updated = updated;
             return this;
         }
@@ -447,12 +443,12 @@ public interface TCStringEncoder {
         }
 
         public Builder consentScreen(int consentScreen) {
-            this.consentScreen = consentScreen;
+            this. consentScreen = consentScreen;
             return this;
         }
 
         public Builder consentLanguage(String consentLanguage) throws IllegalArgumentException {
-            this.consentLanguage = validateString(consentLanguage, FieldDefs.CORE_CONSENT_LANGUAGE);
+            this. consentLanguage = validateString(consentLanguage, FieldDefs.CORE_CONSENT_LANGUAGE);
             return this;
         }
 
@@ -477,7 +473,7 @@ public interface TCStringEncoder {
         }
 
         public Builder addVendorConsent(int vendorsConsent) {
-            this.vendorConsent.add(vendorsConsent);
+            this. vendorConsent.add(vendorsConsent);
             return this;
         }
 
@@ -557,7 +553,7 @@ public interface TCStringEncoder {
         }
 
         public Builder clearVendorLegitimateInterest() {
-            this.vendorLegitimateInterest.clear();
+            this. vendorLegitimateInterest.clear();
             return this;
         }
 
@@ -567,22 +563,22 @@ public interface TCStringEncoder {
         }
 
         public Builder addDisclosedVendors(IntIterable disclosedVendors) {
-            this.disclosedVendors.add(disclosedVendors);
+            this. disclosedVendors.add(disclosedVendors);
             return this;
         }
 
         public Builder clearDisclosedVendors() {
-            this.disclosedVendors.clear();
+            this.disclosedVendors. clear();
             return this;
         }
 
         public Builder addAllowedVendors(int allowedVendors) {
-            this.allowedVendors.add(allowedVendors);
+            this.allowedVendors. add(allowedVendors);
             return this;
         }
 
         public Builder addAllowedVendors(IntIterable allowedVendors) {
-            this.allowedVendors.add(allowedVendors);
+            this.allowedVendors. add(allowedVendors);
             return this;
         }
 
@@ -622,17 +618,17 @@ public interface TCStringEncoder {
         }
 
         public Builder addCustomPurposesLITransparency(int customPurposesLITransparency) {
-            this.customPurposesLITransparency.add(customPurposesLITransparency);
+            this.customPurposesLITransparency. add(customPurposesLITransparency);
             return this;
         }
 
         public Builder addCustomPurposesLITransparency(IntIterable customPurposesLITransparency) {
-            this.customPurposesLITransparency.add(customPurposesLITransparency);
+            this. customPurposesLITransparency.add(customPurposesLITransparency);
             return this;
         }
 
         public Builder clearCustomPurposesLITransparency() {
-            this.customPurposesLITransparency.clear();
+            this.customPurposesLITransparency. clear();
             return this;
         }
 
@@ -642,7 +638,7 @@ public interface TCStringEncoder {
         }
 
         public Builder addPubPurposesLITransparency(IntIterable pubPurposesLITransparency) {
-            this.pubPurposesLITransparency.add(pubPurposesLITransparency);
+            this. pubPurposesLITransparency.add(pubPurposesLITransparency);
             return this;
         }
 
@@ -651,13 +647,12 @@ public interface TCStringEncoder {
             return this;
         }
 
-
         public Builder addPublisherRestrictionEntry(PublisherRestrictionEntry entry) {
             publisherRestrictions.add(entry);
             return this;
         }
 
-        public Builder addPublisherRestrictionEntry(PublisherRestrictionEntry... entries) {
+        public Builder addPublisherRestrictionEntry(PublisherRestrictionEntry...  entries) {
             for (int i = 0; i < entries.length; i++) {
                 addPublisherRestrictionEntry(entries[i]);
             }
@@ -700,13 +695,12 @@ public interface TCStringEncoder {
         }
 
         private String validateString(String str, FieldDefs field) {
-            if (str.length() != (field.getLength() / FieldDefs.CHAR.getLength())) {
+            if (str. length() != (field.getLength() / FieldDefs.CHAR. getLength())) {
                 throw new IllegalArgumentException(str + " must be length 2 but is " + str.length());
             }
 
-            return str.toUpperCase();
+            return str. toUpperCase();
         }
-
 
         private int validateVersion(int version) {
             if (version < 1 || version > 2) {
@@ -717,11 +711,11 @@ public interface TCStringEncoder {
         }
     }
 
-    public static TCStringEncoder.Builder newBuilder() {
+    public static TCStringEncoder. Builder newBuilder() {
         return new TCStringEncoder.Builder();
     }
 
-    public static TCStringEncoder.Builder newBuilder(TCStringEncoder.Builder tcStringEncoder) {
+    public static TCStringEncoder. Builder newBuilder(TCStringEncoder. Builder tcStringEncoder) {
         return new TCStringEncoder.Builder(tcStringEncoder);
     }
 

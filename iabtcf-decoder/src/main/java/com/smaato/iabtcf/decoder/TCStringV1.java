@@ -32,8 +32,8 @@ import static com.smaato.iabtcf.utils.FieldDefs.V1_VENDOR_LIST_VERSION;
 import static com.smaato.iabtcf.utils.FieldDefs.V1_VENDOR_MAX_VENDOR_ID;
 import static com.smaato.iabtcf.utils.FieldDefs.V1_VERSION;
 
-import java.time.Instant;
 import java.util.BitSet;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -63,13 +63,13 @@ class TCStringV1 implements TCString {
     }
 
     @Override
-    public Instant getCreated() {
-        return Instant.ofEpochMilli(bbv.readBits36(V1_CREATED) * 100);
+    public Date getCreated() {
+        return new Date(bbv.readBits36(V1_CREATED) * 100);
     }
 
     @Override
-    public Instant getLastUpdated() {
-        return Instant.ofEpochMilli(bbv.readBits36(V1_LAST_UPDATED) * 100);
+    public Date getLastUpdated() {
+        return new Date(bbv.readBits36(V1_LAST_UPDATED) * 100);
     }
 
     @Override
@@ -200,7 +200,7 @@ class TCStringV1 implements TCString {
         if (isRangeEncoding) {
             boolean defaultConsent = bbv.readBits1(FieldDefs.V1_VENDOR_DEFAULT_CONSENT);
             TCStringV2.vendorIdsFromRange(bbv, bs, FieldDefs.V1_VENDOR_NUM_ENTRIES.getOffset(bbv),
-                    Optional.of(maxVendor));
+                    maxVendor);
 
             if (defaultConsent) {
                 bs.flip(1, maxV + 1);

@@ -24,20 +24,20 @@ import android.annotation.TargetApi;
 import android.os.Build;
 
 import com.smaato.iabtcf.encoder.exceptions.ValueOverflowException;
-import com.smaato.iabtcf.utils.FieldDefs;
+import com. smaato.iabtcf.utils. FieldDefs;
 import com.smaato.iabtcf.utils.IntIterable;
 import com.smaato.iabtcf.utils.IntIterator;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.Base64;
-import java.util.BitSet;
-import java.util.PrimitiveIterator.OfLong;
+import java.util. BitSet;
+import java.util. Date;
+import java.util.PrimitiveIterator. OfLong;
 
 /**
- * Provides the ability to construct a byte array that is iabtcf compliant. The BitWriter provides
+ * Provides the ability to construct a byte array that is iabtcf compliant.  The BitWriter provides
  * the ability to append bits of various types and sizes in an effort to construct the byte array.
  */
 class BitWriter {
@@ -47,7 +47,7 @@ class BitWriter {
         for (int i = 0; i < Long.SIZE; i++) {
             LONG_MASKS[i] = (1L << i) - 1;
         }
-        LONG_MASKS[Long.SIZE] = ~0L;
+        LONG_MASKS[Long. SIZE] = ~0L;
     }
 
     private final OfLongIterable buffer = new OfLongIterable();
@@ -77,14 +77,14 @@ class BitWriter {
     }
 
     public void write(boolean data, FieldDefs field) {
-        assert (field.getLength() == 1);
+        assert (field. getLength() == 1);
         write(data);
     }
 
     /**
-     * Writes an iabtcf encoded String..
+     * Writes an iabtcf encoded String.
      */
-    @TargetApi(Build.VERSION_CODES.KITKAT)
+    @TargetApi(Build.VERSION_CODES. KITKAT)
     public void write(String str) {
         assert Charset.forName("US-ASCII").newEncoder().canEncode(str);
         byte[] b = str.toUpperCase().getBytes(StandardCharsets.US_ASCII);
@@ -103,20 +103,20 @@ class BitWriter {
 
     /**
      * Writes a series of bits of 'field' length whose set bits are indicated by the position of the
-     * ints in 'of'. The least significant bit starts at 1.
+     * ints in 'of'.  The least significant bit starts at 1.
      *
      * @throws IndexOutOfBoundsException if 'of' contains an invalid index, <= 0.
      */
     public void write(IntIterable of, FieldDefs field) {
-        write(of, field.getLength());
+        write(of, field. getLength());
     }
 
     /**
-     * Writes an iabtcf encoded instant value.
+     * Writes an iabtcf encoded date value for the specified field.
+     * API 21+ compatible - uses java.util.Date instead of java.time.Instant
      */
-    @TargetApi(Build.VERSION_CODES.O)
-    public void write(Instant i, FieldDefs field) {
-        write(i.toEpochMilli() / 100, field);
+    public void write(Date d, FieldDefs field) {
+        write(d.getTime() / 100, field);
     }
 
     /**
@@ -136,7 +136,7 @@ class BitWriter {
         for (IntIterator i = of.intIterator(); i.hasNext();) {
             int nextInt = i.nextInt();
             if (nextInt <= 0) {
-                throw new IndexOutOfBoundsException("invalid index: " + nextInt);
+                throw new IndexOutOfBoundsException("invalid index:  " + nextInt);
             }
 
             if (nextInt > length) {
@@ -144,7 +144,7 @@ class BitWriter {
                 continue;
             }
 
-            bs.set(nextInt - 1);
+            bs. set(nextInt - 1);
         }
         for (int i = 0; i < length; i++) {
             bw.write(bs.get(i));
@@ -153,17 +153,18 @@ class BitWriter {
     }
 
     /**
-     * Writes an iabtcf encoded instant value, FieldDefs.TIMESTAMP.
+     * Writes an iabtcf encoded date value, FieldDefs.TIMESTAMP.
+     * API 21+ compatible - uses java.util.Date instead of java.time.Instant
      */
-    public void write(Instant i) {
-        write(i, FieldDefs.TIMESTAMP);
+    public void write(Date d) {
+        write(d, FieldDefs. TIMESTAMP);
     }
 
     /**
      * Writes up 'field' length number of bits from 'data'.
      */
     public void write(long data, FieldDefs field) {
-        write(data, field.getLength());
+        write(data, field. getLength());
     }
 
     /**
@@ -172,7 +173,7 @@ class BitWriter {
      * @throws ValueOverflowException if i cannot be encoded by field#getLength number of bits.
      */
     public void writeV(long i, FieldDefs field) {
-        Bounds.checkBounds(i, field);
+        Bounds. checkBounds(i, field);
         write(i, field);
     }
 
@@ -185,7 +186,7 @@ class BitWriter {
         }
 
         if (length < 0 || length > Long.SIZE) {
-            throw new IllegalArgumentException("length is invalid: " + length);
+            throw new IllegalArgumentException("length is invalid:  " + length);
         }
 
         data &= LONG_MASKS[length];
@@ -202,7 +203,7 @@ class BitWriter {
     }
 
     /**
-     * Writes bits encoded by the specified BitWriter. Padding bits, if any, are also appended.
+     * Writes bits encoded by the specified BitWriter.  Padding bits, if any, are also appended.
      */
     @TargetApi(Build.VERSION_CODES.N)
     public void write(BitWriter bw) {
@@ -211,7 +212,7 @@ class BitWriter {
         }
         write(bw.pending >>> bw.bitsRemaining, Long.SIZE - bw.bitsRemaining);
 
-        enforcePrecision(bw.precision);
+        enforcePrecision(bw. precision);
     }
 
     /**

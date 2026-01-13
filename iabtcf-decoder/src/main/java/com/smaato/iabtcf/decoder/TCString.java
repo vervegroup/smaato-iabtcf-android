@@ -19,8 +19,8 @@ package com.smaato.iabtcf.decoder;
  * limitations under the License.
  * #L%
  */
+import java.util. Date;
 
-import java.time.Instant;
 import java.util.List;
 
 import com.smaato.iabtcf.exceptions.ByteParseException;
@@ -59,7 +59,7 @@ public interface TCString {
      * @throws TCStringDecodeException
      * @return timestamp the record was first created
      */
-    Instant getCreated();
+    Date getCreated();
 
     /**
      * Epoch deciseconds (0.1 of a second) when TC String was last updated
@@ -68,7 +68,7 @@ public interface TCString {
      * @throws TCStringDecodeException
      * @return timestamp record was last updated
      */
-    Instant getLastUpdated();
+    Date getLastUpdated();
 
     /**
      * Consent Management Platform ID that last updated the TC String

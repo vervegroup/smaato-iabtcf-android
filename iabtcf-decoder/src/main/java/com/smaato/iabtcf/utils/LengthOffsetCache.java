@@ -1,4 +1,4 @@
-package com.smaato.iabtcf.utils;
+package com.smaato. iabtcf.utils;
 
 /*-
  * #%L
@@ -9,9 +9,9 @@ package com.smaato.iabtcf.utils;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,8 +21,12 @@ package com.smaato.iabtcf.utils;
  */
 
 import java.util.EnumMap;
-import java.util.function.Function;
 
+/**
+ * Cache for field offsets and lengths to avoid recalculation.
+ * Updated to use custom BitReaderFunction interface instead of java.util.function.Function
+ * for Android API 21+ compatibility.
+ */
 class LengthOffsetCache {
     private final BitReader bbv;
     private final EnumMap<FieldDefs, Integer> lengthCache = new EnumMap<>(FieldDefs.class);
@@ -32,17 +36,29 @@ class LengthOffsetCache {
         this.bbv = bbv;
     }
 
-    public Integer getLength(FieldDefs field, Function<BitReader, Integer> f) {
+    /**
+     * Get cached length or compute and cache it.
+     * Updated to use custom BitReaderFunction interface.
+     */
+    public Integer getLength(FieldDefs field, BitReaderFunction f) {
         return memoize(field, lengthCache, f);
     }
 
-    public Integer getOffset(FieldDefs field, Function<BitReader, Integer> f) {
+    /**
+     * Get cached offset or compute and cache it.
+     * Updated to use custom BitReaderFunction interface.
+     */
+    public Integer getOffset(FieldDefs field, BitReaderFunction f) {
         return memoize(field, offsetCache, f);
     }
 
+    /**
+     * Memoize function result based on field's dynamic state.
+     * Uses custom BitReaderFunction interface instead of java.util.function.Function.
+     */
     private Integer memoize(FieldDefs field, EnumMap<FieldDefs, Integer> cache,
-            Function<BitReader, Integer> f) {
-        if (!field.isDynamic()) {
+                            BitReaderFunction f) {
+        if (! field.isDynamic()) {
             return f.apply(bbv);
         }
 
