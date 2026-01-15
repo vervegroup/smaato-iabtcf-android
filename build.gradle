@@ -1,0 +1,117 @@
+/*
+ * Copyright 2019 Smaato Inc.
+ * Licensed under the Smaato SDK License Agreement
+ * https://www.smaato.com/sdk-license-agreement/
+ */
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+//*****NOTE******
+// DO NOT PUT HERE ANY CONFIG RELATED TO APP-TEST MODULE
+
+def VERSION = "2.4"
+def versionName = buildVersionName(VERSION)
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+
+    }
+
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.9.3'
+        classpath 'com.google.gms:google-services:4.4.2'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    project.group = 'com.smaato.android.sdk'
+    project.version = versionName
+    repositories {
+        google()
+        mavenCentral()
+        mavenLocal()
+        maven {
+            url "https://s3.amazonaws.com/smaato-sdk-releases/"
+        }
+        maven {
+            url "https://s3.amazonaws.com/smaato-android-sdk/"
+        }
+        maven {
+            url "https://verve.jfrog.io/ui/native/verve-gradle-release-local/"
+        }
+    }
+}
+
+subprojects { project ->
+    apply plugin: 'maven-publish'
+    publishing {
+        repositories {
+            maven {
+                name = "PublicJfrog"
+                url = uri("https://verve.jfrog.io/artifactory/verve-gradle-release-local")
+                credentials {
+                    username = "paste_username"
+                    password = "paste_password"
+                }
+            }
+            maven {
+                name "Public"
+                url "s3://smaato-sdk-releases/"
+                authentication {
+                    awsIm(AwsImAuthentication)
+                }
+            }
+        }
+    }
+}
+
+static def getBranchName() {
+    return System.getenv("BRANCH_NAME") as String ?: "git rev-parse --abbrev-ref HEAD".execute().text.trim()
+}
+
+apply plugin: 'distribution'
+
+distributions {
+    release {
+        contents { dist ->
+            subprojects { project ->
+                if (!project.file(".distexclude").exists()) {
+                    project.pluginManager.withPlugin("aar-artifact") {
+                        project.afterEvaluate {
+                            dist.from(project.tasks.named("bundleReleaseAar").get().outputs.files)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+static def buildVersionName(version) {
+    def branch = getBranchName()
+    if (branch.startsWith("decoder_release/")) {
+        return version
+    }
+    if (branch.startsWith('feature/')) {
+        return "${version}-${branch - 'feature/'}-${buildSuffix()}-SNAPSHOT"
+    }
+    return "$version-${branch}-${buildSuffix()}-SNAPSHOT"
+}
+
+static def buildVersionCode(String version) {
+    int versionCode = 0
+    (version =~ /(\d+)/).collect {
+        Integer.parseInt(it[0] as String)
+    }.take(3).eachWithIndex { num, index ->
+        versionCode += (num * Math.max(1, (1000000 / Math.pow(1000, index))))
+    }
+    return versionCode
+}
+
+static def buildSuffix() {
+    return System.getenv("BUILD_NUMBER") as String ?: "local-build"
+}

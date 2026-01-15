@@ -1,0 +1,6 @@
+
+rootProject.name = "tcstring-decoder"
+include ':iabtcf-extras'
+include ':iabtcf-decoder'
+include ':iabtcf-encoder'
+include ':iabtcf-extras-jackson'

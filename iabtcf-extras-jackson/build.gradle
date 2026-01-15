@@ -1,0 +1,51 @@
+apply plugin: "com.android.library"
+apply plugin: "maven-publish"
+
+
+android {
+    compileSdk 35
+
+    namespace 'com.smaato.iabtcf'
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 35
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+}
+
+dependencies {
+    implementation project(path: ':iabtcf-extras')
+    implementation 'org.codehaus.jackson:jackson-core-asl:1.9.11'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.0'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.0'
+    testImplementation 'junit:junit:4.13.2'
+}
+
+publishing.publications {
+    release(MavenPublication) {
+        groupId project.group
+        artifactId project.name
+        version project.version
+
+        project.afterEvaluate {
+            artifact project.tasks.named("bundleReleaseAar").get()
+        }
+
+        pom.withXml {
+            def dependencies = asNode().appendNode('dependencies')
+            project.configurations.api.dependencies.withType(org.gradle.api.internal.artifacts.dependencies.AbstractModuleDependency).each {
+                def dependency = dependencies.appendNode('dependency')
+                dependency.appendNode('groupId', it.group)
+                dependency.appendNode('artifactId', it.name)
+                dependency.appendNode('version', it.version)
+                dependency.appendNode('scope', "compile")
+            }
+        }
+    }
+}
